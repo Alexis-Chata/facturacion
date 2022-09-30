@@ -16,8 +16,15 @@ class HistorialRecibos extends Component
     public function  mount($cliente_id)
     {
         $this->hcliente = Cliente::find($cliente_id);
-        $this->finicio = $this->hcliente->recibos->first()->femision;
-        $this->ffinal = $this->hcliente->recibos->last()->femision;
+        if ($this->hcliente->recibos != "[]") {
+            $this->finicio = $this->hcliente->recibos->first()->femision;
+            $this->ffinal = $this->hcliente->recibos->last()->femision;
+        }
+        else {
+            $this->finicio = null;
+            $this->ffinal = null;
+        }
+
     }
 
     public function render()

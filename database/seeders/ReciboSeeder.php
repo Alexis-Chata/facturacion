@@ -19,7 +19,7 @@ class ReciboSeeder extends Seeder
     {
         $recibos = Recibo::factory(20)->create();
 
-        foreach ($recibos as $key => $recibo) {
+        foreach ($recibos as $keya => $recibo) {
             $detalles = Detalle::factory(rand(1,5))->create([
                 'recibo_id' => $recibo->id,
             ]);
@@ -27,9 +27,9 @@ class ReciboSeeder extends Seeder
             foreach ($detalles as $key => $detalle) {
                 $total = $total + $detalle->importe;
             }
+            $recibo->correlativo = $keya+1;
             $recibo->total = $total;
             $recibo->save();
         }
-
     }
 }

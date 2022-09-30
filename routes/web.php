@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 Route::view('/historial', 'historial_recibos');
 Route::view('/usuarios', 'gestionar_usuarios');
+Route::view('/comprobante', 'recibos.comprobante_pdf');
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

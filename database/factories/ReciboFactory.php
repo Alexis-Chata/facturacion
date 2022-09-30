@@ -18,7 +18,7 @@ class ReciboFactory extends Factory
     {
         return [
             'femision' => $this->faker->date(),
-            'correlativo' => Recibo::all()->count(),
+            'correlativo' => Recibo::all()->count()+1,
             'termino' => $this->faker->randomElement(['Deposito','Efectivo']),
             'total' => 0,
             'cajero_id' => User::all()->random()->id,
