@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/historial', 'historial_recibos');
+Route::view('/usuarios', 'gestionar_usuarios');
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
