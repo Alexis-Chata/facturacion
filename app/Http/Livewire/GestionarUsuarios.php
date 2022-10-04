@@ -97,6 +97,7 @@ class GestionarUsuarios extends Component
         $this->cliente->save();
         $this->modal_titulo = "Crear";
         $this->cliente = new Cliente();
+        $this->emit('notificar_listado');
         $this->reset('stcliente');
     }
 

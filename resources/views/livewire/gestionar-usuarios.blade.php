@@ -1,9 +1,9 @@
 <div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_crear_actualizar_cliente" wire:click="modal('Crear')">
+    <button type="button" class="btn btn-success" id="ventana_usuario" data-bs-toggle="modal" data-bs-target="#modal_crear_actualizar_cliente" wire:click="modal('Crear')">
         <i class="fas fa-plus-circle"></i> Gestionar Usuarios
     </button>
     <!-- Modal crear periodo-->
-    <div wire:ignore.self class="modal fade" id="modal_crear_actualizar_cliente" tabindex="-2" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="modal_crear_actualizar_cliente" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,7 +18,7 @@
                                   <a wire:ignore.self class="nav-link active" data-toggle="tab" href="#tasks" role="tab" aria-controls="tasks" aria-selected="true" id="1_pestana">{{$modal_titulo}} Cliente </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a  wire:ignore.self class="nav-link" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Lista de Clientes</a>
+                                    <a  wire:ignore.self class="nav-link" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false" id="1_listado">Lista de Clientes</a>
                                 </li>
                             </ul>
                         </div>
@@ -109,10 +109,10 @@
                                     <div class="content-list">
                                         <div class="row mt-2">
                                             <div class="container mb-4">
-                                            <div class="col-12">
-                                                <label for="buscar_cliente">Buscar Cliente :</label>
-                                              <input type="text" class="form-control" id="buscar_cliente" wire:model='bcliente'>
-                                            </div>
+                                                <div class="col-12">
+                                                    <label for="buscar_cliente">Buscar Cliente :</label>
+                                                    <input type="text" class="form-control" id="buscar_cliente" wire:model='bcliente'>
+                                                </div>
                                             </div>
                                           </div>
                                         @if ($gclientes != null)

@@ -8,7 +8,9 @@
     </center>
 @stop
 @section('content')
-    @livewire('gestionar-usuarios')
+@livewire('gestionar-servicios')
+@livewire('gestionar-usuarios')
+
 @stop
 
 @section('css')
@@ -24,6 +26,18 @@
 <script>
     window.livewire.on('notificar_seleccion', accion => {
         document.getElementById("1_pestana").click();
+    });
+
+    window.livewire.on('notificar_listado', accion => {
+        document.getElementById("1_listado").click();
+    });
+
+    window.livewire.on('notificar_seleccion_servicio', accion => {
+        document.getElementById("1_pestana_s").click();
+    });
+
+    window.livewire.on('notificar_listado_servicio', accion => {
+        document.getElementById("1_listado_s").click();
     });
 </script>
 @stop
