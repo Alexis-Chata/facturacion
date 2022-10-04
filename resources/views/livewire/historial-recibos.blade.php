@@ -30,7 +30,10 @@
                 <td scope="row" class="text-center">Q.{{$recibo->total}}</td>
                 <td scope="row" class="text-center"><button class="btn btn-primary">{{$recibo->detalles->count()}}</button></td>
                 <td scope="row" class="text-center">cancelado</td>
-                <td scope="row" class="text-center"><button class="btn btn-danger">Reenviar</button> <button class="btn btn-warning">Editar</button> <button class="btn btn-success">Descargar</button></td>
+                <td scope="row" class="text-center">
+                    <button class="btn btn-danger"  wire:loading.attr="disabled" wire:target="reenviar" wire:click="reenviar('{{$recibo->id}}')">Reenviar</button>
+                    <button class="btn btn-warning">Editar</button>
+                    <button class="btn btn-success"  wire:loading.attr="disabled" wire:target="descargar_recibo" wire:click="descargar_recibo('{{$recibo->id}}')">Descargar</button></td>
             </tr>
             @endforeach
         </tbody>
