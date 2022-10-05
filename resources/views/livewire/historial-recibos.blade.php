@@ -17,7 +17,9 @@
                     <p><strong>Direccion del cliente: </strong>{{ " ".$hcliente->paterno }}</p>
                 </div>
                 <div class="col">
-                    <p><strong>numero de recibo :</strong> 8</p>
+                    @if ($editar)
+                        <p><strong>numero de recibo :</strong> 8</p>
+                    @endif
                     <p><strong>fecha :</strong> {{ now()->format('d-m-Y') }}</p>
                     <p><strong>Forma de pago :</strong> Deposito</p>
                 </div>
@@ -56,7 +58,7 @@
                             <label for="total"> Total: </label>
                         </div>
                         <div class="col">
-                            <button class="btn btn-success">Agregar</button>
+                            <button class="btn btn-success" wire:click="agregar_item">Agregar</button>
                         </div>
                     </div>
                 </div>
@@ -87,7 +89,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <button class="btn btn-success">Generar Comprobante</button>
+            <button class="btn btn-success" wire:click="generar_comprobante">Generar Comprobante</button>
         </div>
     </div>
 
@@ -113,7 +115,7 @@
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody>{{--dd($detallePedido)--}}
             @foreach ($hcliente->recibos->sortByDesc('femision') as $recibo)
             <tr>
                 <td scope="row" class="text-center">REC - {{$recibo->correlativo}}</td>
@@ -124,7 +126,7 @@
                 <td scope="row" class="text-center">cancelado</td>
                 <td scope="row" class="text-center">
                     <button class="btn btn-danger"  wire:loading.attr="disabled" wire:target="reenviar" wire:click="reenviar('{{$recibo->id}}')">Reenviar</button>
-                    <button class="btn btn-warning">Editar</button>
+                    <button class="btn btn-warning" wire:click="$toggle('editar')">Editar</button>
                     <button class="btn btn-success"  wire:loading.attr="disabled" wire:target="descargar_recibo" wire:click="descargar_recibo('{{$recibo->id}}')">Descargar</button></td>
             </tr>
             @endforeach

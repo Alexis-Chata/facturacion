@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Mail\TestMail;
 use App\Models\Cliente;
+use App\Models\Detalle;
 use App\Models\Recibo;
 use App\Models\Servicio;
 use App\Models\User;
@@ -17,10 +18,13 @@ class HistorialRecibos extends Component
     public $ffinal;
     public $hcliente;
     public $listaServicios, $servicioSeleccionado;
-    public $cantidad, $costo, $total;
+    public $cantidad, $costo, $total, $detallePedido;
+    public $editar;
 
     public function  mount($cliente_id)
     {
+        $this->detallePedido = collect();
+        $this->editar = false;
         $this->servicioSeleccionado = 4;
         $this->cantidad = 1;
         $this->costo = 100;
@@ -53,11 +57,29 @@ class HistorialRecibos extends Component
 
     public function agregar_item()
     {
+        $item = new Detalle();
+        $item->descripcion = $this->servicioSeleccionado;
+        $item->cantidad = $this->cantidad;
+        $item->precio = $this->costo;
+        $item->importe = $this->total;
+        $this->detallePedido->push($item);
+    }
+
+    public function generar_comprobante()
+    {
+        $this->detallePedido->each(function ($item, $key) {
+            $addItem = new Detalle($item);
+            $addItem->recibo_id = 8;
+            //dd($addItem);
+            $addItem->save();
+        });
+        $this->mount(3);
     }
 
     public function descargar_informe()
     {
     }
+
     public function descargar_recibo(Recibo $recibo)
     {
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
