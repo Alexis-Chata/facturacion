@@ -105,6 +105,7 @@
                                     </div>
                                   </div>
                                 </div>
+
                                 <div wire:ignore.self class="tab-pane fade" id="files" role="tabpanel" data-filter-list="dropzone-previews">
                                     <div class="content-list">
                                         <div class="row mt-2">
@@ -151,6 +152,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
