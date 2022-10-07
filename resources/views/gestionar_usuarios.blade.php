@@ -2,13 +2,14 @@
 
 @section('title', 'Dashboard')
 
+@section('classes_body', 'sidebar-mini sidebar-collapse')
+
 @section('content_header')
     <center>
         <h1>Fichas de Matriculas</h1>
     </center>
 @stop
 @section('content')
-    @livewire('gestionar-servicios')
     @livewire('gestionar-usuarios')
     @livewire('historial-recibos', ['cliente_id' => 3])
 @stop
