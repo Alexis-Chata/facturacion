@@ -61,6 +61,18 @@
         window.livewire.on('notificar_listado_servicio', accion => {
             document.getElementById("1_listado_s").click();
         });
+
+        window.livewire.on('cerrar_modal', () => {
+            $('#modal_crear_actualizar_cliente').modal('hide');
+            Livewire.emit('modal')
+        })
+
+        window.livewire.on('abrir_modal', () => {
+            $('#modal_crear_actualizar_cliente').modal('show');
+            $('[href="#files"]').tab('show');
+            Livewire.emit('modal')
+        })
+
     </script>
 
 @stop

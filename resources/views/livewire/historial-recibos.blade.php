@@ -93,7 +93,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @dd($detallePedido) --}}
                     @if ($detallePedido->count())
                         @foreach ($detallePedido as $indice=>$item)
                             <tr>
@@ -150,7 +149,7 @@
                         <th scope="col" class="text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>{{-- dd($detallePedido) --}}
+                <tbody>
                     @foreach ($hcliente->recibos->sortByDesc('femision') as $recibo)
                         <tr>
                             <td scope="row" class="text-center">REC - {{ $recibo->correlativo }}</td>

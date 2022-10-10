@@ -57,7 +57,8 @@ class HistorialRecibos extends Component
     }
 
     public function updatedCantidad(){
-
+        $this->cantidad = $this->cantidad ? $this->cantidad : 1;
+        $this->costo = $this->costo ? $this->costo : 0;
         $this->importe = $this->cantidad * $this->costo;
     }
 
@@ -71,6 +72,7 @@ class HistorialRecibos extends Component
     public function clienteIdToRecibo($clienteid){
 
         $this->mount($clienteid);
+        $this->emit('cerrar_modal');
     }
 
     public function render(){
@@ -89,6 +91,7 @@ class HistorialRecibos extends Component
         if(!$this->hcliente->id){
             $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
             $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
+            $this->emit('abrir_modal');
         }
         Validator::make(
             ['cliente' => $this->hcliente->id],
@@ -112,10 +115,10 @@ class HistorialRecibos extends Component
     }
 
     public function generar_comprobante(){
-        //dd($this->detallePedido->count());
         if(!$this->hcliente->id){
             $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
             $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
+            $this->emit('abrir_modal');
         }
         Validator::make(
             ['cliente' => $this->hcliente->id],
@@ -128,7 +131,6 @@ class HistorialRecibos extends Component
             ['detalle' => 'required'],
             ['required' => 'Agregar Servicios'],
         )->validate();
-        dd($this->detallePedido);
         $recibo = new Recibo();
         $recibo->cliente_id = $this->hcliente->id;
         $recibo->femision = now();

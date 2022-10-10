@@ -101,6 +101,8 @@ class GestionarUsuarios extends Component
         $this->reset('stcliente');
     }
 
+    protected $listeners = ['modal'];
+
     public function render()
     {
         $tclientes = Tcliente::all();
