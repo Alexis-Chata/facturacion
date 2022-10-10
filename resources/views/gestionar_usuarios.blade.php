@@ -11,7 +11,7 @@
 @stop
 @section('content')
     @livewire('gestionar-usuarios')
-    @livewire('historial-recibos', ['cliente_id' => 3])
+    @livewire('historial-recibos')
 @stop
 
 @section('css')

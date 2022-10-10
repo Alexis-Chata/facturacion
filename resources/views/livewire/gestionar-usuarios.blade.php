@@ -136,7 +136,7 @@
                                                             <td>{{$gcliente->recibos->count()}}</td>
                                                             <td>
                                                                 <button class="btn btn-success" id="select-{{$gcliente->id}}" wire:click="obtener_datos('{{$gcliente->id}}')">Seleccionar</button>
-                                                                <button class="btn btn-warning" id="generar-{{$gcliente->id}}" wire:click="">Generar</button>
+                                                                <button class="btn btn-warning" id="generar-{{$gcliente->id}}" wire:click="$emit('clienteIdToRecibo', {{$gcliente->id}})">Generar</button>
                                                                 <button class="btn btn-danger" id="eliminar-{{$gcliente->id}}" wire:click="eliminar('{{$gcliente->id}}')" wire:target="eliminar" wire:loading.attr="disabled">Eliminar</button>
                                                             </td>
                                                         </tr>

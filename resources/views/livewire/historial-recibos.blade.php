@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col">
                     <p><strong>Cliente: </strong>{{ $hcliente->name . ' ' . $hcliente->paterno . ' ' . $hcliente->materno }}</p>
-                    <p><strong>Direccion del cliente: </strong>{{ ' ' . $hcliente->paterno }}</p>
+                    <p><strong>Direccion del cliente: </strong>{{ ' ' . $hcliente->direccion }}</p>
                 </div>
                 <div class="col">
                     @if ($editar)
@@ -75,6 +75,7 @@
                             </div>
                             <div class="col">
                                 <button class="btn btn-success" wire:click.prevent="agregar_item">Agregar</button>
+                                <x-jet-input-error for="cliente" />
                             </div>
                         </div>
                     </form>
@@ -102,7 +103,7 @@
                                 <td scope="row" class="align-middle text-center">{{ $item['importe'] }}</td>
                                 <td scope="row" class="align-middle text-center">
                                     <button class="align-middle btn btn-danger" wire:click="eliminarItem({{ $indice }})"><i class="far fa-trash-alt"
-                                            aria-hidden="true"></i>{{ $indice }}</button>
+                                            aria-hidden="true"></i></button>
                                     <button class="align-middle btn btn-warning"><i class="far fa-edit"
                                             aria-hidden="true"></i></button>
                                 </td>
@@ -118,6 +119,8 @@
             <div class="row justify-content-end mt-3">
                 <div class="col-auto">
                     <button class="btn btn-primary" wire:click="generar_comprobante">Generar Comprobante</button>
+                    <x-jet-input-error for="cliente" />
+                    <x-jet-input-error for="detalle" />
                 </div>
             </div>
         </div>
