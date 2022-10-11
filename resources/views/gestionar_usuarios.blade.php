@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard')
 
-@section('classes_body', 'sidebar-mini sidebar-collapse')
+@section('classes_body', 'layout-fixed layout-navbar-fixed sidebar-mini sidebar-collapse')
 
 @section('content_header')
     <center>

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Mail\TestMail;
 use App\Models\Cliente;
 use App\Models\Detalle;
+use App\Models\FormaPago;
 use App\Models\Recibo;
 use App\Models\Servicio;
 use App\Models\User;
@@ -20,13 +21,14 @@ class HistorialRecibos extends Component
     public $hcliente;
     public $listaServicios, $servicioSeleccionado;
     public $cantidad, $costo, $importe, $detallePedido, $total;
-    public $editar;
+    public $forma_pago, $editar;
 
     public function  mount($cliente_id=null){
 
         $this->resetRecibo();
         $this->resetErrorBag();
         $this->listaServicios = Servicio::all();
+        $this->forma_pago = 'Efectivo';
         $this->finicio = null;
         $this->ffinal = null;
         $this->hcliente = new Cliente();
@@ -76,8 +78,8 @@ class HistorialRecibos extends Component
     }
 
     public function render(){
-
-        return view('livewire.historial-recibos');
+        $formaPago = FormaPago::all();
+        return view('livewire.historial-recibos', compact('formaPago'));
     }
 
     public function eliminarItem($indice){
@@ -93,6 +95,7 @@ class HistorialRecibos extends Component
             $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
             $this->emit('abrir_modal');
         }
+        $this->resetErrorBag();
         Validator::make(
             ['cliente' => $this->hcliente->id],
             ['cliente' => 'required'],
@@ -120,6 +123,7 @@ class HistorialRecibos extends Component
             $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
             $this->emit('abrir_modal');
         }
+        $this->resetErrorBag();
         Validator::make(
             ['cliente' => $this->hcliente->id],
             ['cliente' => 'required'],
@@ -134,10 +138,11 @@ class HistorialRecibos extends Component
         $recibo = new Recibo();
         $recibo->cliente_id = $this->hcliente->id;
         $recibo->femision = now();
-        $recibo->correlativo = 21;
-        $recibo->termino = 'Deposito';
+        $recibo->termino = $this->forma_pago;
         $recibo->total = $this->total;
         $recibo->cajero_id = 1;
+        $recibo->save();
+        $recibo->correlativo = $recibo->id;
         $recibo->save();
 
         foreach($this->detallePedido as $item) {

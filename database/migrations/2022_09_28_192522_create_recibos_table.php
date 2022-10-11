@@ -17,7 +17,7 @@ class CreateRecibosTable extends Migration
             $table->id();
             $table->unsignedBigInteger('cliente_id');
             $table->date('femision');
-            $table->string('correlativo');
+            $table->string('correlativo')->nullable();
             $table->string('termino');
             $table->double('total');
             $table->unsignedBigInteger('cajero_id')->nullable();

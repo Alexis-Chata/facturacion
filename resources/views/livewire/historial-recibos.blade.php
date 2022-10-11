@@ -26,7 +26,16 @@
                         <p><strong>numero de recibo :</strong> 8</p>
                     @endif
                     <p><strong>fecha :</strong> {{ now()->format('d-m-Y') }}</p>
-                    <p><strong>Forma de pago :</strong> Deposito</p>
+                        <div class="form-group row">
+                            <label for="inputCodigo" class="col-auto col-form-label"><strong>Forma de pago :</strong></label>
+                            @foreach ( $formaPago as $f_Pago )
+                                <div class="form-check form-check-inline col justify-content-center">
+                                    <input class="form-check-input" type="radio" wire:model.defer="forma_pago" name="forma_pago" id="forma_pago{{$f_Pago->id}}" value="{{$f_Pago->name}}">
+                                    <label class="form-check-label" for="forma_pago{{$f_Pago->id}}" role=button>{{$f_Pago->name}}</label>
+                            </div>
+                            @endforeach
+                            <x-jet-input-error for="forma_pago"/>
+                        </div>
                 </div>
             </div>
 
@@ -98,8 +107,8 @@
                             <tr>
                                 <td scope="row" class="align-middle text-center">{{ $item['descripcion'] }}</td>
                                 <td scope="row" class="align-middle text-center">{{ $item['cantidad'] }}</td>
-                                <td scope="row" class="align-middle text-center">{{ $item['precio'] }}</td>
-                                <td scope="row" class="align-middle text-center">{{ $item['importe'] }}</td>
+                                <td scope="row" class="align-middle text-center">{{ 'Q. '.$item['precio'] }}</td>
+                                <td scope="row" class="align-middle text-center">{{ 'Q. '.$item['importe'] }}</td>
                                 <td scope="row" class="align-middle text-center">
                                     <button class="align-middle btn btn-danger" wire:click="eliminarItem({{ $indice }})"><i class="far fa-trash-alt"
                                             aria-hidden="true"></i></button>
@@ -150,7 +159,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($hcliente->recibos->sortByDesc('femision') as $recibo)
+                    @foreach ($hcliente->recibos->sortByDesc('correlativo')->sortByDesc('femision') as $recibo)
                         <tr>
                             <td scope="row" class="text-center">REC - {{ $recibo->correlativo }}</td>
                             <td scope="row" class="text-center">{{ date('d-m-Y', strtotime($recibo->femision)) }}

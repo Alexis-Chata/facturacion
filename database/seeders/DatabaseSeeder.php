@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\FormaPago;
 use App\Models\Tcliente;
 use Illuminate\Database\Seeder;
 
@@ -21,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TclienteSeeder::class);
         $this->call(ClienteSeeder::class);
         $this->call(ReciboSeeder::class);
+        $this->call(FormaPagoSeeder::class);
     }
 }
