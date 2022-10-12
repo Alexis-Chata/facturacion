@@ -21,7 +21,7 @@ class HistorialRecibos extends Component
     public $hcliente;
     public $listaServicios, $servicioSeleccionado;
     public $cantidad, $costo, $importe, $detallePedido, $total;
-    public $forma_pago, $editar;
+    public $forma_pago, $editandoItem, $card_header_servicio, $card_body_btn_servicio;
 
     public function  mount($cliente_id=null){
 
@@ -29,11 +29,11 @@ class HistorialRecibos extends Component
         $this->resetErrorBag();
         $this->listaServicios = Servicio::all();
         $this->forma_pago = 'Efectivo';
+        $this->card_header_servicio = 'Servicios';
+        $this->card_body_btn_servicio = 'Agregar';
         $this->finicio = null;
         $this->ffinal = null;
         $this->hcliente = new Cliente();
-        $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
-        $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
         if ($cliente_id) {
             $this->hcliente = Cliente::find($cliente_id);
             if ($this->hcliente->recibos != "[]") {
@@ -54,7 +54,7 @@ class HistorialRecibos extends Component
 
         $this->detallePedido = collect();
         $this->total = 0;
-        $this->editar = false;
+        $this->editandoItem = null;
         $this->resetNewItem();
     }
 
@@ -71,6 +71,12 @@ class HistorialRecibos extends Component
 
     protected $listeners = ['clienteIdToRecibo'];
 
+    /**
+     * Recibe id del cliente para cargar sus datos y generar comprobante
+     *
+     * @param  $clienteid
+     * @return void
+     */
     public function clienteIdToRecibo($clienteid){
 
         $this->mount($clienteid);
@@ -78,6 +84,10 @@ class HistorialRecibos extends Component
     }
 
     public function render(){
+        if(!$this->hcliente->id){
+            $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
+            $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
+        }
         $formaPago = FormaPago::all();
         return view('livewire.historial-recibos', compact('formaPago'));
     }
@@ -87,20 +97,22 @@ class HistorialRecibos extends Component
         $this->total = $this->total-$this->detallePedido[$indice]['importe'];
         unset($this->detallePedido[$indice]);
     }
+    public function editarItem($indice){
+        $this->editandoItem = $indice;
+        $this->card_header_servicio = 'Editando Servicio';
+        $this->card_body_btn_servicio = 'Editar Servicio';
+        $this->emit('updateDescripcionServicio', $this->detallePedido[$indice]['descripcion']);
+        $this->servicioSeleccionado = $this->detallePedido[$indice]['descripcion'];
+        $this->cantidad = $this->detallePedido[$indice]['cantidad'];
+        $this->costo = $this->detallePedido[$indice]['precio'];
+        $this->importe = $this->detallePedido[$indice]['importe'];
+    }
 
     public function agregar_item(){
 
-        if(!$this->hcliente->id){
-            $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
-            $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
-            $this->emit('abrir_modal');
-        }
         $this->resetErrorBag();
-        Validator::make(
-            ['cliente' => $this->hcliente->id],
-            ['cliente' => 'required'],
-            ['required' => 'Seleccionar Cliente'],
-        )->validate();
+        $this->abrirModal();
+        $this->validateCliente();
 
         Validator::make(
             ['servicio' => $this->servicioSeleccionado ? $this->servicioSeleccionado: null, 'cantidad' => $this->cantidad, 'costo' => $this->costo],
@@ -113,22 +125,26 @@ class HistorialRecibos extends Component
         $newItem->precio = $this->costo;
         $newItem->importe = $this->importe;
         $this->detallePedido->push($newItem->toArray());
+        if(isset($this->editandoItem)){
+            $this->eliminarItem($this->editandoItem);
+            $this->editandoItem = null;
+        }
         $this->total = $this->total+$this->importe;
         $this->resetNewItem();
     }
 
     public function generar_comprobante(){
-        if(!$this->hcliente->id){
-            $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
-            $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
-            $this->emit('abrir_modal');
+
+        if(isset($this->editandoItem)){
+            Validator::make(
+                ['editandoItem' => null],
+                ['editandoItem' => 'required'],
+                ['required' => 'Termine de editar Item'],
+            )->validate();
         }
         $this->resetErrorBag();
-        Validator::make(
-            ['cliente' => $this->hcliente->id],
-            ['cliente' => 'required'],
-            ['required' => 'Seleccionar Cliente'],
-        )->validate();
+        $this->abrirModal();
+        $this->validateCliente();
 
         Validator::make(
             ['detalle' => $this->detallePedido],
@@ -151,6 +167,25 @@ class HistorialRecibos extends Component
             $addItem->save();
         };
         $this->mount($this->hcliente->id);
+    }
+
+    public function validateCliente(){
+
+        Validator::make(
+            ['cliente' => $this->hcliente->id],
+            ['cliente' => 'required'],
+            ['required' => 'Seleccionar Cliente'],
+        )->validate();
+
+    }
+
+    /**
+     * Abre modal de clientes, en caso no se haya seleccionado un cliente
+    */
+    public function abrirModal(){
+        if(!$this->hcliente->id){
+            $this->emit('abrir_modal');
+        }
     }
 
     public function descargar_informe(){

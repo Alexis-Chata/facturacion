@@ -73,6 +73,12 @@
             Livewire.emit('modal')
         })
 
+        window.livewire.on('updateDescripcionServicio', ($servicioDescripcion=null) => {
+            if($servicioDescripcion){
+                $('#select2-listaServicios-container').text($servicioDescripcion);
+            }
+        })
+
     </script>
 
 @stop

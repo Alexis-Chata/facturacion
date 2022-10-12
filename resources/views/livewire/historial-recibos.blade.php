@@ -3,7 +3,7 @@
         <div class="card-header">
             <div class="row align-items-center">
                 <div class="col col-md-3">
-                    <h5>RECIBO</h5>
+                    <h5  id="card-header-recibo">RECIBO</h5>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                     <p><strong>Direccion del cliente: </strong>{{ ' ' . $hcliente->direccion }}</p>
                 </div>
                 <div class="col">
-                    @if ($editar)
+                    @if (false)
                         <p><strong>numero de recibo :</strong> 8</p>
                     @endif
                     <p><strong>fecha :</strong> {{ now()->format('d-m-Y') }}</p>
@@ -43,7 +43,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col col-md-3">
-                            <h5>Servicios</h5>
+                            <h5 id="card-header-servicio">{{ $card_header_servicio }}</h5>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                                         wire:model='servicioSeleccionado' required>
                                         <option value=""> Seleccione un servicio</option>
                                         @foreach ($listaServicios as $listaServicio)
-                                            <option value="{{ $listaServicio->id }}">{{ $listaServicio->name }}</option>
+                                            <option value="{{ $listaServicio->name }}">{{ $listaServicio->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -83,7 +83,7 @@
                                 <label for="importe"> Importe: </label>
                             </div>
                             <div class="col">
-                                <button class="btn btn-success" wire:click.prevent="agregar_item">Agregar</button>
+                                <button class="btn btn-success" wire:click.prevent="agregar_item" wire:loading.attr="disabled" id="card-body-btn-servicio">{{ $card_body_btn_servicio }}</button>
                                 <x-jet-input-error for="cliente" />
                             </div>
                         </div>
@@ -107,12 +107,12 @@
                             <tr>
                                 <td scope="row" class="align-middle text-center">{{ $item['descripcion'] }}</td>
                                 <td scope="row" class="align-middle text-center">{{ $item['cantidad'] }}</td>
-                                <td scope="row" class="align-middle text-center">{{ 'Q. '.$item['precio'] }}</td>
-                                <td scope="row" class="align-middle text-center">{{ 'Q. '.$item['importe'] }}</td>
+                                <td scope="row" class="align-middle text-center">{{ 'Q. '.number_format($item['precio'], 2) }}</td>
+                                <td scope="row" class="align-middle text-center">{{ 'Q. '.number_format($item['importe'], 2) }}</td>
                                 <td scope="row" class="align-middle text-center">
-                                    <button class="align-middle btn btn-danger" wire:click="eliminarItem({{ $indice }})"><i class="far fa-trash-alt"
+                                    <button class="align-middle btn btn-danger" wire:click="eliminarItem({{ $indice }})" wire:loading.attr="disabled"><i class="far fa-trash-alt"
                                             aria-hidden="true"></i></button>
-                                    <button class="align-middle btn btn-warning"><i class="far fa-edit"
+                                    <button class="align-middle btn btn-warning" wire:click="editarItem({{ $indice }})" wire:loading.attr="disabled"><i class="far fa-edit"
                                             aria-hidden="true"></i></button>
                                 </td>
                             </tr>
@@ -126,9 +126,13 @@
             </table>
             <div class="row justify-content-end mt-3">
                 <div class="col-auto">
-                    <button class="btn btn-primary" wire:click="generar_comprobante">Generar Comprobante</button>
+                    <span><strong>Total: </strong> Q. {{ number_format($total, 2) }}</span>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" wire:click="generar_comprobante" wire:loading.attr="disabled">Generar Comprobante</button>
                     <x-jet-input-error for="cliente" />
                     <x-jet-input-error for="detalle" />
+                    <x-jet-input-error for="editandoItem" />
                 </div>
             </div>
         </div>
@@ -172,7 +176,7 @@
                             <td scope="row" class="text-center">
                                 <button class="btn btn-danger" wire:loading.attr="disabled" wire:target="reenviar"
                                     wire:click="reenviar('{{ $recibo->id }}')">Reenviar</button>
-                                <button class="btn btn-warning" wire:click="$toggle('editar')">Editar</button>
+                                <button class="btn btn-warning">Editar</button>
                                 <button class="btn btn-success" wire:loading.attr="disabled"
                                     wire:target="descargar_recibo"
                                     wire:click="descargar_recibo('{{ $recibo->id }}')">Descargar</button>
