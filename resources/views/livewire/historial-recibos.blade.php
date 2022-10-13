@@ -3,7 +3,7 @@
         <div class="card-header">
             <div class="row align-items-center">
                 <div class="col col-md-3">
-                    <h5  id="card-header-recibo">RECIBO</h5>
+                    <h5 class="m-0" id="card-header-recibo">{{ $card_header_recibo }}</h5>
                 </div>
             </div>
         </div>
@@ -22,10 +22,7 @@
                     <p><strong>Direccion del cliente: </strong>{{ ' ' . $hcliente->direccion }}</p>
                 </div>
                 <div class="col">
-                    @if (false)
-                        <p><strong>numero de recibo :</strong> 8</p>
-                    @endif
-                    <p><strong>fecha :</strong> {{ now()->format('d-m-Y') }}</p>
+                    <p><strong>fecha :</strong> {{ $f_emision->format('d-m-Y') }}</p>
                         <div class="form-group row">
                             <label for="inputCodigo" class="col-auto col-form-label"><strong>Forma de pago :</strong></label>
                             @foreach ( $formaPago as $f_Pago )
@@ -83,7 +80,7 @@
                                 <label for="importe"> Importe: </label>
                             </div>
                             <div class="col">
-                                <button class="btn btn-success" wire:click.prevent="agregar_item" wire:loading.attr="disabled" id="card-body-btn-servicio">{{ $card_body_btn_servicio }}</button>
+                                <button class="btn btn-success" wire:click.prevent="agregar_item({{ $editar_detalle_id }})" wire:loading.attr="disabled" id="card-body-btn-servicio">{{ $card_body_btn_servicio }}</button>
                                 <x-jet-input-error for="cliente" />
                             </div>
                         </div>
@@ -129,7 +126,7 @@
                     <span><strong>Total: </strong> Q. {{ number_format($total, 2) }}</span>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-primary" wire:click="generar_comprobante" wire:loading.attr="disabled">Generar Comprobante</button>
+                    <button class="btn btn-primary" wire:click="generar_comprobante({{ $editar_comprobante_id }})" wire:loading.attr="disabled">{{ $card_body_btn_generar_comprobante }}</button>
                     <x-jet-input-error for="cliente" />
                     <x-jet-input-error for="detalle" />
                     <x-jet-input-error for="editandoItem" />
@@ -176,7 +173,7 @@
                             <td scope="row" class="text-center">
                                 <button class="btn btn-danger" wire:loading.attr="disabled" wire:target="reenviar"
                                     wire:click="reenviar('{{ $recibo->id }}')">Reenviar</button>
-                                <button class="btn btn-warning">Editar</button>
+                                <button class="btn btn-warning" wire:click="editarComprobante('{{ $recibo->id }}')" wire:loading.attr="disabled">Editar</button>
                                 <button class="btn btn-success" wire:loading.attr="disabled"
                                     wire:target="descargar_recibo"
                                     wire:click="descargar_recibo('{{ $recibo->id }}')">Descargar</button>

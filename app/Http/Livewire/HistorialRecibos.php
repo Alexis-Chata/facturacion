@@ -10,6 +10,7 @@ use App\Models\Recibo;
 use App\Models\Servicio;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -21,7 +22,8 @@ class HistorialRecibos extends Component
     public $hcliente;
     public $listaServicios, $servicioSeleccionado;
     public $cantidad, $costo, $importe, $detallePedido, $total;
-    public $forma_pago, $editandoItem, $card_header_servicio, $card_body_btn_servicio;
+    public $forma_pago, $f_emision, $card_body_btn_generar_comprobante, $editar_comprobante_id, $editar_detalle_id;
+    public $editandoItem, $card_header_servicio, $card_body_btn_servicio, $card_header_recibo;
 
     public function  mount($cliente_id=null){
 
@@ -29,8 +31,10 @@ class HistorialRecibos extends Component
         $this->resetErrorBag();
         $this->listaServicios = Servicio::all();
         $this->forma_pago = 'Efectivo';
-        $this->card_header_servicio = 'Servicios';
-        $this->card_body_btn_servicio = 'Agregar';
+        $this->card_header_recibo = 'RECIBO';
+        $this->card_body_btn_generar_comprobante = 'Generar Comprobante';
+        $this->f_emision = now();
+        $this->editar_comprobante_id = null;
         $this->finicio = null;
         $this->ffinal = null;
         $this->hcliente = new Cliente();
@@ -44,7 +48,9 @@ class HistorialRecibos extends Component
     }
 
     public function resetNewItem(){
-
+        $this->card_header_servicio = 'Servicios';
+        $this->card_body_btn_servicio = 'Agregar';
+        $this->editar_detalle_id = null;
         $this->cantidad = 1;
         $this->costo = 0;
         $this->updatedCantidad();
@@ -60,8 +66,8 @@ class HistorialRecibos extends Component
 
     public function updatedCantidad(){
         $this->cantidad = $this->cantidad ? $this->cantidad : 1;
-        $this->costo = $this->costo ? $this->costo : 0;
-        $this->importe = $this->cantidad * $this->costo;
+        $this->costo = $this->costo ? $this->costo : number_format(0, 2);
+        $this->importe = number_format($this->cantidad * $this->costo , 2);
     }
 
     public function updatedcosto(){
@@ -101,6 +107,7 @@ class HistorialRecibos extends Component
         $this->editandoItem = $indice;
         $this->card_header_servicio = 'Editando Servicio';
         $this->card_body_btn_servicio = 'Editar Servicio';
+        $this->editar_detalle_id = isset($this->detallePedido[$indice]['id']) ? $this->detallePedido[$indice]['id'] : null;
         $this->emit('updateDescripcionServicio', $this->detallePedido[$indice]['descripcion']);
         $this->servicioSeleccionado = $this->detallePedido[$indice]['descripcion'];
         $this->cantidad = $this->detallePedido[$indice]['cantidad'];
@@ -108,7 +115,7 @@ class HistorialRecibos extends Component
         $this->importe = $this->detallePedido[$indice]['importe'];
     }
 
-    public function agregar_item(){
+    public function agregar_item(Detalle $newItem){
 
         $this->resetErrorBag();
         $this->abrirModal();
@@ -119,7 +126,6 @@ class HistorialRecibos extends Component
             ['servicio' => 'required', 'cantidad' => 'required|numeric|min:1', 'costo' => 'required|numeric|min:1'],
             ['required' => 'requerido', 'min' => 'minimo 1'],
         )->validate();
-        $newItem = new Detalle();
         $newItem->descripcion = $this->servicioSeleccionado;
         $newItem->cantidad = $this->cantidad;
         $newItem->precio = $this->costo;
@@ -133,7 +139,7 @@ class HistorialRecibos extends Component
         $this->resetNewItem();
     }
 
-    public function generar_comprobante(){
+    public function generar_comprobante(Recibo $recibo){
 
         if(isset($this->editandoItem)){
             Validator::make(
@@ -151,20 +157,19 @@ class HistorialRecibos extends Component
             ['detalle' => 'required'],
             ['required' => 'Agregar Servicios'],
         )->validate();
-        $recibo = new Recibo();
+        $recibo->femision = $this->f_emision;
         $recibo->cliente_id = $this->hcliente->id;
-        $recibo->femision = now();
         $recibo->termino = $this->forma_pago;
         $recibo->total = $this->total;
         $recibo->cajero_id = 1;
         $recibo->save();
-        $recibo->correlativo = $recibo->id;
+        $recibo->correlativo = $recibo->correlativo ? $recibo->correlativo : $recibo->id;
         $recibo->save();
 
         foreach($this->detallePedido as $item) {
-            $addItem = new Detalle($item);
-            $addItem->recibo_id = $recibo->id;
-            $addItem->save();
+            $item['id'] = isset($item['id']) ? $item['id'] : null;
+            $item['recibo_id'] = isset($item['recibo_id']) ? $item['recibo_id'] : $recibo->id;
+            isset($item['id']) ? Detalle::updateOrCreate(['id' => $item['id']], $item) : Detalle::create($item);
         };
         $this->mount($this->hcliente->id);
     }
@@ -202,8 +207,14 @@ class HistorialRecibos extends Component
         );
     }
 
-    public function editar(){
-
+    public function editarComprobante(Recibo $recibo){
+        $this->card_header_recibo = 'EDITANDO RECIBO REC - '.$recibo->correlativo;
+        $this->card_body_btn_generar_comprobante = 'Actualizar Comprobante';
+        $this->f_emision = Carbon::parse($recibo->femision);
+        $this->forma_pago = $recibo->termino;
+        $this->detallePedido = collect($recibo->detalles->toArray());
+        $this->total = $recibo->total;
+        $this->editar_comprobante_id = $recibo->id;
     }
 
     public function reenviar(Recibo $recibo){
