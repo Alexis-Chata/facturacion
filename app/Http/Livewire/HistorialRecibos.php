@@ -11,6 +11,7 @@ use App\Models\Servicio;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -199,8 +200,20 @@ class HistorialRecibos extends Component
 
     public function descargar_recibo(Recibo $recibo){
 
+
+
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
         $pdfContent = $consultapdf->output();
+
+        if (! File::exists(storage_path('app/public/') . 'recibospdf/')) {
+            File::makeDirectory(storage_path('app/public/') . 'recibospdf/');
+        }
+        $nombreticketpdf ='recibospdf/rec-'.$recibo->correlativo.'.pdf';
+        $consultapdf->save(storage_path('app/public/') . $nombreticketpdf);
+        $recibo->path_pdf = $nombreticketpdf;
+        $recibo->save();
+
+
         return response()->streamDownload(
             fn () => print($pdfContent),
             "recibo.pdf"

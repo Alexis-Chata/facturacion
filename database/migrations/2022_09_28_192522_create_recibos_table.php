@@ -20,6 +20,7 @@ class CreateRecibosTable extends Migration
             $table->string('correlativo')->nullable();
             $table->string('termino');
             $table->double('total');
+            $table->string('path_pdf')->nullable();
             $table->unsignedBigInteger('cajero_id')->nullable();
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('cajero_id')->references('id')->on('users')->onDelete('set null');
