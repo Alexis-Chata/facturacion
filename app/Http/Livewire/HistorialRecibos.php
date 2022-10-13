@@ -172,6 +172,7 @@ class HistorialRecibos extends Component
             $item['recibo_id'] = isset($item['recibo_id']) ? $item['recibo_id'] : $recibo->id;
             isset($item['id']) ? Detalle::updateOrCreate(['id' => $item['id']], $item) : Detalle::create($item);
         };
+        $this->generar_reciboPdf($recibo);
         $this->mount($this->hcliente->id);
     }
 
@@ -198,12 +199,9 @@ class HistorialRecibos extends Component
 
     }
 
-    public function descargar_recibo(Recibo $recibo){
-
-
+    public function generar_reciboPdf(Recibo $recibo){
 
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
-        $pdfContent = $consultapdf->output();
 
         if (! File::exists(storage_path('app/public/') . 'recibospdf/')) {
             File::makeDirectory(storage_path('app/public/') . 'recibospdf/');
@@ -212,8 +210,13 @@ class HistorialRecibos extends Component
         $consultapdf->save(storage_path('app/public/') . $nombreticketpdf);
         $recibo->path_pdf = $nombreticketpdf;
         $recibo->save();
+    }
 
+    public function descargar_recibo(Recibo $recibo){
 
+        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
+        $pdfContent = $consultapdf->output();
+        $this->generar_reciboPdf($recibo);
         return response()->streamDownload(
             fn () => print($pdfContent),
             "recibo.pdf"
