@@ -135,7 +135,7 @@
                     <h5 class="color-gris">Móvil : 4729 6758</h5>
                 </th>
                 <th class="w-15">
-                    <img src="{{public_path('imagenes/qr.png')}}" alt="" width="100%">
+                    <div>{!! DNS2D::getBarcodeHTML(asset("storage/".$recibo->path_pdf), 'QRCODE',4.5,4.5) !!} </div>
                     <div class="text-right color-naranja fw-900 fs-28 ">RECIBO</div>
                 </th>
             </tr>

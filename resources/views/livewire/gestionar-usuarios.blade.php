@@ -1,4 +1,4 @@
-<div>
+<div class="col container mt-4">
     <button type="button" class="btn btn-success" id="ventana_usuario" data-bs-toggle="modal"
         data-bs-target="#modal_crear_actualizar_cliente" wire:click="modal('Crear')">
         <i class="fas fa-plus-circle"></i> Gestionar Usuarios
@@ -6,7 +6,7 @@
     <!-- Modal crear periodo-->
     <div wire:ignore.self class="modal fade" id="modal_crear_actualizar_cliente" tabindex="-3"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Gestionar Usuarios</h5>
@@ -139,31 +139,33 @@
                                                     <table class="table">
                                                         <thead class="table-dark">
                                                             <tr>
+                                                                <th>N°</th>
                                                                 <th>Nombres y Apellidos</th>
-                                                                <th>Identificación</th>
-                                                                <th>Recibos</th>
+                                                                <th class="text-center">Identificación</th>
+                                                                <th class="text-center">Recibos</th>
                                                                 <th>Acciones</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody class="table-success">
-                                                            @foreach ($gclientes as $gcliente)
+                                                        <tbody class="table-secondary">
+                                                            @foreach ($gclientes as $key=>$gcliente)
                                                                 <tr>
+                                                                    <td>{{$key+1}}</td>
                                                                     <td>{{ $gcliente->name . ' ' . $gcliente->paterno . ' ' . $gcliente->materno }}
                                                                     </td>
-                                                                    <td>{{ $gcliente->identificacion }}</td>
-                                                                    <td>{{ $gcliente->recibos->count() }}</td>
+                                                                    <td class="text-center">{{ $gcliente->identificacion }}</td>
+                                                                    <td class="text-center">{{ $gcliente->recibos->count() }}</td>
                                                                     <td>
-                                                                        <button class="btn btn-success"
-                                                                            id="select-{{ $gcliente->id }}"
-                                                                            wire:click="obtener_datos('{{ $gcliente->id }}')">Seleccionar</button>
-                                                                        <button class="btn btn-warning"
+                                                                            <button class="btn btn-success text-white"
                                                                             id="generar-{{ $gcliente->id }}"
-                                                                            wire:click="$emit('clienteIdToRecibo', {{ $gcliente->id }})">Generar</button>
-                                                                        <button class="btn btn-danger"
+                                                                            wire:click="$emit('clienteIdToRecibo', {{ $gcliente->id }})"><i class="fas fa-plus-circle"></i></button>
+                                                                            <button class="btn btn-secondary"
+                                                                            id="select-{{ $gcliente->id }}"
+                                                                            wire:click="obtener_datos('{{ $gcliente->id }}')"><i class="fas fa-edit"></i></button>
+                                                                            <button class="btn btn-danger"
                                                                             id="eliminar-{{ $gcliente->id }}"
                                                                             wire:click="eliminar('{{ $gcliente->id }}')"
                                                                             wire:target="eliminar"
-                                                                            wire:loading.attr="disabled">Eliminar</button>
+                                                                            wire:loading.attr="disabled"><i class="fas fa-trash"></i></button>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

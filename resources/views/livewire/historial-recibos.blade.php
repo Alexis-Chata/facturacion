@@ -12,21 +12,21 @@
 
             <div class="row">
                 <div class="col">
-                    <h3 class="mb-3">Datos del cliente</h3>
+                    <h3 class="mb-3">Datos del cliente</h3><hr>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <p><strong>Cliente: </strong>{{ $hcliente->name . ' ' . $hcliente->paterno . ' ' . $hcliente->materno }}</p>
-                    <p><strong>Direccion del cliente: </strong>{{ ' ' . $hcliente->direccion }}</p>
+                    <p><strong>Cliente : </strong>{{ $hcliente->name . ' ' . $hcliente->paterno . ' ' . $hcliente->materno }}</p>
+                    <p><strong>Direccion del cliente : </strong>{{ ' ' . $hcliente->direccion }}</p>
                 </div>
                 <div class="col">
-                    <p><strong>fecha :</strong> {{ $f_emision->format('d-m-Y') }}</p>
-                        <div class="form-group row">
-                            <label for="inputCodigo" class="col-auto col-form-label"><strong>Forma de pago :</strong></label>
+                    <p><strong>Fecha :</strong> {{ $f_emision->format('d-m-Y') }}</p>
+                        <div class="form-group row p-0">
+                            <label for="inputCodigo" class="col-auto"><strong>Forma de pago :</strong></label>
                             @foreach ( $formaPago as $f_Pago )
-                                <div class="form-check form-check-inline col justify-content-center">
+                                <div class="form-check col">
                                     <input class="form-check-input" type="radio" wire:model.defer="forma_pago" name="forma_pago" id="forma_pago{{$f_Pago->id}}" value="{{$f_Pago->name}}">
                                     <label class="form-check-label" for="forma_pago{{$f_Pago->id}}" role=button>{{$f_Pago->name}}</label>
                             </div>
@@ -141,7 +141,7 @@
                 <div class="col col-md-3">
                     <h5>HISTORIAL DE RECIBO</h5>
                 </div>
-                <div class="col col-md-3"><button class="btn btn-success">Descargar Informe</button></div>
+                <div class="col col-md-3"><button class="btn btn-success" wire:click="descargar_historial()"><i class="fas fa-download"></i> Descargar Informe</button></div>
                 <div class="col col-md-3"><input type="date" class="form-control" wire:model="finicio"></div>
                 <div class="col col-md-3"><input type="date" class="form-control" wire:model="ffinal"></div>
             </div>
@@ -172,11 +172,11 @@
                             <td scope="row" class="text-center">cancelado</td>
                             <td scope="row" class="text-center">
                                 <button class="btn btn-danger" wire:loading.attr="disabled" wire:target="reenviar"
-                                    wire:click="reenviar('{{ $recibo->id }}')">Reenviar</button>
-                                <button class="btn btn-warning" wire:click="editarComprobante('{{ $recibo->id }}')" wire:loading.attr="disabled">Editar</button>
+                                    wire:click="reenviar('{{ $recibo->id }}')"><i class="fas fa-envelope"></i></button>
+                                <button class="btn btn-secondary" wire:click="editarComprobante('{{ $recibo->id }}')" wire:loading.attr="disabled"><i class="fas fa-edit"></i></button>
                                 <button class="btn btn-success" wire:loading.attr="disabled"
                                     wire:target="descargar_recibo"
-                                    wire:click="descargar_recibo('{{ $recibo->id }}')">Descargar</button>
+                                    wire:click="descargar_recibo('{{ $recibo->id }}')"><i class="fas fa-download"></i></button>
                             </td>
                         </tr>
                     @endforeach

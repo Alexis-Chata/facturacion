@@ -1,0 +1,11 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::view('', 'dashboard');
+Route::view('/usuarios', 'gestionar_usuarios')->middleware('can:admin.recibos')->name('admin.recibos');
+#usuario
+Route::view('usuario/cambiar', 'administrador.usuarios.cambiar_password')->middleware('can:admin.recibos')->name('admin.usuario.cambiar');
+//Route::view('/historial', 'historial_recibos')->middleware('can:admin.recibos')->name('admin.recibos');
+//Route::view('/usuarios', 'gestionar_usuarios');
+//Route::view('/comprobante', 'recibos.comprobante_pdf');

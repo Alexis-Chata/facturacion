@@ -12,20 +12,24 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/', function () {
+        return redirect('admin');
+    });
 });
 
-Route::view('/historial', 'historial_recibos');
-Route::view('/usuarios', 'gestionar_usuarios');
-Route::view('/comprobante', 'recibos.comprobante_pdf');
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return redirect('admin');
     })->name('dashboard');
 });
+
+

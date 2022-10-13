@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Exports\CrecibosExport;
 use App\Mail\TestMail;
 use App\Models\Cliente;
 use App\Models\Detalle;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HistorialRecibos extends Component
 {
@@ -26,6 +28,12 @@ class HistorialRecibos extends Component
     public $forma_pago, $f_emision, $card_body_btn_generar_comprobante, $editar_comprobante_id, $editar_detalle_id;
     public $editandoItem, $card_header_servicio, $card_body_btn_servicio, $card_header_recibo;
 
+    public function descargar_historial(){
+        if($this->hcliente->id){
+            $cliente = $this->hcliente;
+        return Excel::download(new CrecibosExport($cliente), 'ReporteFicha_usuario.xlsx');
+        }
+    }
     public function  mount($cliente_id=null){
 
         $this->resetRecibo();

@@ -52,7 +52,7 @@ class GestionarUsuarios extends Component
         $this->gclientes = Cliente::Where(function($query) {
                         $query->where('identificacion','like','%'.$this->bcliente.'%')
                                 ->orWhere(DB::raw("CONCAT(`name`,' ',`paterno`,' ',`materno`)"), 'like', '%' . $this->bcliente.'%');
-                    })->get();
+                    })->orderBy('id', 'DESC')->get();
     }
     #obtener datos
     public function obtener_datos($usuario){
@@ -68,10 +68,7 @@ class GestionarUsuarios extends Component
             $this->cliente = new Cliente();
             $this->modal_titulo = $accion;
         }
-        else
-        {
-
-        }
+        $this->updatedBcliente();
     }
     #eliminar
     public function eliminar(Cliente $cliente){
@@ -99,6 +96,7 @@ class GestionarUsuarios extends Component
         $this->cliente = new Cliente();
         $this->emit('notificar_listado');
         $this->reset('stcliente');
+        $this->updatedBcliente();
     }
 
     protected $listeners = ['modal'];
