@@ -214,7 +214,7 @@ class HistorialRecibos extends Component
         if (! File::exists(storage_path('app/public/') . 'recibospdf/')) {
             File::makeDirectory(storage_path('app/public/') . 'recibospdf/');
         }
-        $nombreticketpdf ='recibospdf/rec-'.$recibo->correlativo.'.pdf';
+        $nombreticketpdf ='recibospdf/rec-'.strtotime(date("F j, Y, g:i a"))."-".$recibo->correlativo.'.pdf';
         $consultapdf->save(storage_path('app/public/') . $nombreticketpdf);
         $recibo->path_pdf = $nombreticketpdf;
         $recibo->save();
@@ -224,7 +224,7 @@ class HistorialRecibos extends Component
 
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
         $pdfContent = $consultapdf->output();
-        $this->generar_reciboPdf($recibo);
+        //$this->generar_reciboPdf($recibo);
         return response()->streamDownload(
             fn () => print($pdfContent),
             "recibo.pdf"

@@ -160,7 +160,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($hcliente->recibos->sortByDesc('correlativo')->sortByDesc('femision') as $recibo)
+                    @foreach ($hcliente->recibos->where('femision','>=',$finicio)->where('femision','<=',$ffinal)->sortByDesc('correlativo')->sortByDesc('femision') as $recibo)
                         <tr>
                             <td scope="row" class="text-center">REC - {{ $recibo->correlativo }}</td>
                             <td scope="row" class="text-center">{{ date('d-m-Y', strtotime($recibo->femision)) }}

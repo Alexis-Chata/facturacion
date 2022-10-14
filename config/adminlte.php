@@ -298,6 +298,12 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Reporte',
+            'route'  => 'admin.reportes',
+            'icon' => 'fas fa-file',
+            'can' => 'admin.recibos',
+        ],
+        [
             'text' => 'change_password',
             'route'  => 'admin.usuario.cambiar',
             'icon' => 'fas fa-fw fa-lock',
