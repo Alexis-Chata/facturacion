@@ -240,7 +240,7 @@
                 <td colspan="4" class="">Total en Letras :</td>
             </tr>
             <tr>
-                <td colspan="4" class="text-center p-2 border-s">SESENTA MIL QUETZALES EXACTOS</td>
+                <td colspan="4" class="text-center p-2 border-s">{{ $total_letra }}</td>
             </tr>
             <tr>
                 <td colspan="4" class="text-center p-2">Si tiene alguna duda sobre este recibo, póngase en contacto con</td>

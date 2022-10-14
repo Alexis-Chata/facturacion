@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Luecano\NumeroALetras\NumeroALetras;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HistorialRecibos extends Component
@@ -209,7 +210,10 @@ class HistorialRecibos extends Component
 
     public function generar_reciboPdf(Recibo $recibo){
 
-        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
+        $formatter = new NumeroALetras();
+        $total_letra = $formatter->toInvoice($recibo->total, 2, 'QUETZALES EXACTOS');
+
+        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
 
         if (! File::exists(storage_path('app/public/') . 'recibospdf/')) {
             File::makeDirectory(storage_path('app/public/') . 'recibospdf/');
