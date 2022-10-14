@@ -211,7 +211,7 @@ class HistorialRecibos extends Component
     public function generar_reciboPdf(Recibo $recibo){
 
         $formatter = new NumeroALetras();
-        $total_letra = $formatter->toInvoice($recibo->total, 2, 'QUETZALES EXACTOS');
+        $total_letra = $formatter->towords($recibo->total).'QUETZALES EXACTOS';
 
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
 
@@ -227,7 +227,7 @@ class HistorialRecibos extends Component
     public function descargar_recibo(Recibo $recibo){
 
         $formatter = new NumeroALetras();
-        $total_letra = $formatter->toInvoice($recibo->total, 2, 'QUETZALES EXACTOS');
+        $total_letra = $formatter->towords($recibo->total).'QUETZALES EXACTOS';
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
         $pdfContent = $consultapdf->output();
         //$this->generar_reciboPdf($recibo);
