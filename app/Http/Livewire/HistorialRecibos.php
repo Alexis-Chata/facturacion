@@ -208,7 +208,8 @@ class HistorialRecibos extends Component
 
     }
 
-    public function generar_reciboPdf(Recibo $recibo){
+    public function generar_reciboPdf(Recibo $recibo)
+    {
 
         $formatter = new NumeroALetras();
         $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
@@ -248,9 +249,10 @@ class HistorialRecibos extends Component
     }
 
     public function reenviar(Recibo $recibo){
-
-        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo'));
-        Mail::send('recibos.comprobante_pdf', compact('recibo'), function ($mail) use ($consultapdf, $recibo) {
+        $formatter = new NumeroALetras();
+        $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
+        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo','total_letra'));
+        Mail::send('recibos.comprobante_pdf', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo) {
             $email = $recibo->cliente->email;
             $mail->to([$email]);
             $mail->subject("Espacio Arquitectura");
