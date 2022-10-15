@@ -252,7 +252,7 @@ class HistorialRecibos extends Component
         $formatter = new NumeroALetras();
         $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo','total_letra'));
-        Mail::send('recibos.comprobante_pdf', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo) {
+        Mail::send('recibos.comprobante_pdf_correo', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo) {
             $email = $recibo->cliente->email;
             $mail->to([$email]);
             $mail->subject("Espacio Arquitectura");
