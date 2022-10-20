@@ -11,6 +11,7 @@ use App\Models\Recibo;
 use App\Models\Servicio;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Facade\FlareClient\Http\Client;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
@@ -262,5 +263,11 @@ class HistorialRecibos extends Component
         /* Mail::to($recibo->cliente->email)->send(new TestMail($recibo),function ($mail) use ($consultapdf){
             $mail->attachData($consultapdf->output(),'recibo.pdf');
         });*/
+    }
+
+    public function eliminar(Recibo $recibo){
+        $scliente = $recibo->cliente->id;
+        $recibo->delete();
+        $this->hcliente = Cliente::find($scliente);
     }
 }
