@@ -177,6 +177,8 @@
                                 <button class="btn btn-success" wire:loading.attr="disabled"
                                     wire:target="descargar_recibo"
                                     wire:click="descargar_recibo('{{ $recibo->id }}')"><i class="fas fa-download"></i></button>
+                                    <button class="btn btn-danger" id="eliminar-recibo-{{$recibo->id}}" wire:loading.attr="disabled" wire:target="eliminar"
+                                    wire:click="eliminar('{{ $recibo->id }}')"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     @endforeach
