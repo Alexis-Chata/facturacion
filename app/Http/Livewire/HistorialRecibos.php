@@ -82,7 +82,7 @@ class HistorialRecibos extends Component
     public function updatedCantidad(){
         $this->cantidad = $this->cantidad ? $this->cantidad : 1;
         $this->costo = $this->costo ? $this->costo : number_format(0, 2);
-        $this->importe = number_format($this->cantidad * $this->costo);
+        $this->importe = number_format($this->cantidad * $this->costo, 2, '.', '');
     }
 
     public function updatedcosto(){
