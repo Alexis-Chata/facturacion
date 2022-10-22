@@ -22,7 +22,7 @@
                     <p><strong>Direccion del cliente : </strong>{{ ' ' . $hcliente->direccion }}</p>
                 </div>
                 <div class="col">
-                    <p><strong>Fecha :</strong> {{ $f_emision->format('d-m-Y') }}</p>
+                    <p><strong>Fecha :</strong> <input type="date" class="form form-control" wire:model="f_emision"></p>
                         <div class="form-group row p-0">
                             <label for="inputCodigo" class="col-auto"><strong>Forma de pago :</strong></label>
                             @foreach ( $formaPago as $f_Pago )
@@ -48,7 +48,7 @@
                     <form>
                         <div class="row align-items-center">
                             <div class="col-4">
-                                <div wire:ignore>
+                                <div wire:self.defer>
                                     <select name="listaServicios" id="listaServicios" class="form-control"
                                         wire:model='servicioSeleccionado' required>
                                         <option value=""> Seleccione un servicio</option>
@@ -138,12 +138,12 @@
     <div class="card card-secondary">
         <div class="card-header">
             <div class="row align-items-center">
-                <div class="col col-md-3">
+                <div class="col-12 col-md-3 text-center">
                     <h5>HISTORIAL DE RECIBO</h5>
                 </div>
-                <div class="col col-md-3"><button class="btn btn-success" wire:click="descargar_historial()"><i class="fas fa-download"></i> Descargar Informe</button></div>
-                <div class="col col-md-3"><input type="date" class="form-control" wire:model="finicio"></div>
-                <div class="col col-md-3"><input type="date" class="form-control" wire:model="ffinal"></div>
+                <div class="col-12 col-md-3 text-center my-2 my-md-0"><button class="btn btn-success" wire:click="descargar_historial()"><i class="fas fa-download"></i> Descargar Informe</button></div>
+                <div class="col-12 col-md-3 text-center my-2 my-md-0"><input type="date" class="form-control" wire:model="finicio"></div>
+                <div class="col-12 col-md-3 text-center my-2 my-md-0"><input type="date" class="form-control" wire:model="ffinal"></div>
             </div>
         </div>
         <div class="card-body p-inherit table-responsive">
@@ -178,7 +178,7 @@
                                     wire:target="descargar_recibo"
                                     wire:click="descargar_recibo('{{ $recibo->id }}')"><i class="fas fa-download"></i></button>
                                     <button class="btn btn-danger" id="eliminar-recibo-{{$recibo->id}}" wire:loading.attr="disabled" wire:target="eliminar"
-                                    wire:click="eliminar('{{ $recibo->id }}')"><i class="fas fa-trash"></i></button>
+                                        wire:click="$emit('eliminar',{{$recibo->id}})"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     @endforeach
@@ -198,5 +198,45 @@
             })
         }
     </script>
-
+@push('js')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Livewire.on('eliminar', recibo_id =>{
+                    Swal.fire({
+            title: 'Estas Seguro',
+            text: "Una vez eliminado el Recibo no se podra recuperar",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, !Eliminar!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                Livewire.emitTo('historial-recibos','eliminar_recibo',recibo_id);
+            }
+            })
+    })
+</script>
+<script>
+        window.livewire.on('notificar_eliminar', accion => {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: accion,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        });
+</script>
+<script>
+        window.livewire.on('actualizar_lista', accion =>  {
+                    $('#listaServicios').select2();
+                    $('#listaServicios').on('change', function() {
+                        let valor = $('#listaServicios').select2('val');
+                        let texto = $('#listaServicios option:selected').text();
+                        @this.set('servicioSeleccionado', texto);
+                    });
+        });
+</script>
+@endpush
 </div>

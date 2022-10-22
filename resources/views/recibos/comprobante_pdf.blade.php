@@ -7,7 +7,7 @@
     <title>Document</title>
     <style>
         body {
-            font-family: "Century Gothic";
+            font-family: {{asset('fuentes/GOTHIC.TTF')}};
         }
         .w-15{
             width: 15%;

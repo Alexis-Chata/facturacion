@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Clases\ReciboClass;
 use App\Exports\CrecibosExport;
 use App\Mail\TestMail;
 use App\Models\Cliente;
@@ -30,21 +31,24 @@ class HistorialRecibos extends Component
     public $forma_pago, $f_emision, $card_body_btn_generar_comprobante, $editar_comprobante_id, $editar_detalle_id;
     public $editandoItem, $card_header_servicio, $card_body_btn_servicio, $card_header_recibo;
 
+    public function actualizar_servicios(){
+      $this->listaServicios = Servicio::all();
+    }
+
     public function descargar_historial(){
         if($this->hcliente->id){
-            $cliente = $this->hcliente;
-        return Excel::download(new CrecibosExport($cliente), 'ReporteFicha_usuario.xlsx');
+            $r_recibo = new ReciboClass();
+            return $r_recibo->descargar_historial_cliente($this->hcliente);
         }
     }
     public function  mount($cliente_id=null){
-
         $this->resetRecibo();
         $this->resetErrorBag();
         $this->listaServicios = Servicio::all();
         $this->forma_pago = 'Efectivo';
         $this->card_header_recibo = 'RECIBO';
         $this->card_body_btn_generar_comprobante = 'Generar Comprobante';
-        $this->f_emision = now();
+        $this->f_emision = date('Y-m-d');
         $this->editar_comprobante_id = null;
         $this->finicio = null;
         $this->ffinal = null;
@@ -78,7 +82,7 @@ class HistorialRecibos extends Component
     public function updatedCantidad(){
         $this->cantidad = $this->cantidad ? $this->cantidad : 1;
         $this->costo = $this->costo ? $this->costo : number_format(0, 2);
-        $this->importe = number_format($this->cantidad * $this->costo , 2);
+        $this->importe = number_format($this->cantidad * $this->costo);
     }
 
     public function updatedcosto(){
@@ -86,7 +90,7 @@ class HistorialRecibos extends Component
         $this->updatedCantidad();
     }
 
-    protected $listeners = ['clienteIdToRecibo'];
+    protected $listeners = ['clienteIdToRecibo','eliminar_recibo','actualizar_servicios'];
 
     /**
      * Recibe id del cliente para cargar sus datos y generar comprobante
@@ -101,6 +105,7 @@ class HistorialRecibos extends Component
     }
 
     public function render(){
+        $this->emit('actualizar_lista');
         if(!$this->hcliente->id){
             $this->hcliente->name = ' ----- Seleccionar Cliente ----- ';
             $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
@@ -205,44 +210,22 @@ class HistorialRecibos extends Component
         }
     }
 
-    public function descargar_informe(){
-
-    }
 
     public function generar_reciboPdf(Recibo $recibo)
     {
-
-        $formatter = new NumeroALetras();
-        $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
-
-        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
-
-        if (! File::exists(storage_path('app/public/') . 'recibospdf/')) {
-            File::makeDirectory(storage_path('app/public/') . 'recibospdf/');
-        }
-        $nombreticketpdf ='recibospdf/rec-'.strtotime(date("F j, Y, g:i a"))."-".$recibo->correlativo.'.pdf';
-        $consultapdf->save(storage_path('app/public/') . $nombreticketpdf);
-        $recibo->path_pdf = $nombreticketpdf;
-        $recibo->save();
+        $r_recibo = new ReciboClass();
+        $r_recibo->generar_reciboPdf($recibo);
     }
 
     public function descargar_recibo(Recibo $recibo){
-
-        $formatter = new NumeroALetras();
-        $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
-        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
-        $pdfContent = $consultapdf->output();
-        //$this->generar_reciboPdf($recibo);
-        return response()->streamDownload(
-            fn () => print($pdfContent),
-            "recibo.pdf"
-        );
+        $r_recibo = new ReciboClass();
+        $r_recibo->descargar_recibo($recibo);
     }
 
     public function editarComprobante(Recibo $recibo){
         $this->card_header_recibo = 'EDITANDO RECIBO REC - '.$recibo->correlativo;
         $this->card_body_btn_generar_comprobante = 'Actualizar Comprobante';
-        $this->f_emision = Carbon::parse($recibo->femision);
+        $this->f_emision = $recibo->femision;
         $this->forma_pago = $recibo->termino;
         $this->detallePedido = collect($recibo->detalles->toArray());
         $this->total = $recibo->total;
@@ -250,24 +233,14 @@ class HistorialRecibos extends Component
     }
 
     public function reenviar(Recibo $recibo){
-        $formatter = new NumeroALetras();
-        $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
-        $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo','total_letra'));
-        Mail::send('recibos.comprobante_pdf_correo', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo) {
-            $email = $recibo->cliente->email;
-            $mail->to([$email]);
-            $mail->subject("Espacio Arquitectura");
-            $mail->attachData($consultapdf->output(), 'recibo.pdf');
-        });
-
-        /* Mail::to($recibo->cliente->email)->send(new TestMail($recibo),function ($mail) use ($consultapdf){
-            $mail->attachData($consultapdf->output(),'recibo.pdf');
-        });*/
+        $r_recibo = new ReciboClass();
+        $r_recibo->reenviar($recibo);
     }
 
-    public function eliminar(Recibo $recibo){
+    public function eliminar_recibo(Recibo $recibo){
         $scliente = $recibo->cliente->id;
         $recibo->delete();
         $this->hcliente = Cliente::find($scliente);
+        $this->emit('notificar_eliminar',"Elimino el Usuario correctamente");
     }
 }

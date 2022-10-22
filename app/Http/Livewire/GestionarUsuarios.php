@@ -51,7 +51,10 @@ class GestionarUsuarios extends Component
     {
         $this->gclientes = Cliente::Where(function($query) {
                         $query->where('identificacion','like','%'.$this->bcliente.'%')
-                                ->orWhere(DB::raw("CONCAT(`name`,' ',`paterno`,' ',`materno`)"), 'like', '%' . $this->bcliente.'%');
+                                ->orWhere(DB::raw("CONCAT(`name`,' ',`paterno`,' ',`materno`)"), 'like', '%' . $this->bcliente.'%')
+                                ->orwhere('name', 'like', '%' . $this->bcliente.'%')
+                                ->orwhere('paterno', 'like', '%' . $this->bcliente.'%')
+                                ->orwhere('materno', 'like', '%' . $this->bcliente.'%');
                     })->orderBy('id', 'DESC')->get();
     }
     #obtener datos

@@ -63,6 +63,7 @@ class GestionarServicios extends Component
         $this->modal_titulo = "Crear";
         $this->servicio = new Servicio();
         $this->updatedBservicio();
+        $this->emitTo('historial-recibos','actualizar_servicios');
         $this->emit('notificar_listado_servicio');
     }
 

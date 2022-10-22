@@ -135,7 +135,7 @@
                                         </div>
                                         @if ($gclientes != null)
                                             @if ($gclientes->count() > 0)
-                                                <div class="container">
+                                                <div class="container table-responsive">
                                                     <table class="table">
                                                         <thead class="table-dark">
                                                             <tr>
