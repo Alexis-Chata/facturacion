@@ -17,7 +17,7 @@
             </div>
 
             <div class="row">
-                <div class="col">
+                <div class="col-sm">
                     <p><strong>Cliente : </strong>{{ $hcliente->name . ' ' . $hcliente->paterno . ' ' . $hcliente->materno }}</p>
                     <p><strong>Direccion del cliente : </strong>{{ ' ' . $hcliente->direccion }}</p>
                 </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="card card-secondary m-3 floating ">
+            <div class="card card-secondary m-3 ">
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col col-md-3">
@@ -46,8 +46,8 @@
                 </div>
                 <div class="card-body p-inherit table-responsive">
                     <form>
-                        <div class="row align-items-center">
-                            <div class="col-4">
+                        <div class="row align-items-center g-2">
+                            <div class="col-sm-5 col-md">
                                 <div wire:self.defer>
                                     <select name="listaServicios" id="listaServicios" class="form-control"
                                         wire:model='servicioSeleccionado' required>
@@ -59,27 +59,27 @@
                                 </div>
                                 <x-jet-input-error for="servicio" />
                             </div>
-                            <div class="col-auto">
+                            <div class="col-sm-auto">
                                 @livewire('gestionar-servicios')
                             </div>
-                            <div class="col form-label-group">
+                            <div class="col-sm form-label-group form-floating">
                                 <input type="number" class="form-control" name="cantidad" id="cantidad"
                                     placeholder="Cantidad" wire:model.lazy='cantidad' required min=0>
-                                <label for="cantidad"> Cantidad: </label>
+                                <label for="cantidad" style="padding: 1rem 1.5rem;"> Cantidad: </label>
                                 <x-jet-input-error for="cantidad" />
                             </div>
-                            <div class="col form-label-group">
+                            <div class="col-sm-3 col-md form-label-group form-floating">
                                 <input type="number" class="form-control" name="costo" id="costo"
                                     placeholder="Costo" wire:model.lazy='costo' required min=0>
-                                <label for="costo"> Costo: </label>
+                                <label for="costo" style="padding: 1rem 1.5rem;"> Costo: </label>
                                 <x-jet-input-error for="costo" />
                             </div>
-                            <div class="col form-label-group">
+                            <div class="col-sm-3 col-md form-label-group form-floating">
                                 <input type="number" class="form-control" name="importe" id="importe"
                                     placeholder="Importe" disabled wire:model='importe'>
-                                <label for="importe"> Importe: </label>
+                                <label for="importe" style="padding: 1rem 1.5rem;"> Importe: </label>
                             </div>
-                            <div class="col">
+                            <div class="col-sm">
                                 <button class="btn btn-success" wire:click.prevent="agregar_item({{ $editar_detalle_id }})" wire:loading.attr="disabled" id="card-body-btn-servicio">{{ $card_body_btn_servicio }}</button>
                                 <x-jet-input-error for="cliente" />
                             </div>
@@ -198,6 +198,14 @@
             })
         }
     </script>
+
+@push('css')
+<style>
+    span.select2.select2-container.select2-container--default{
+        width: 100% !important;
+    }
+</style>
+@endpush
 @push('js')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

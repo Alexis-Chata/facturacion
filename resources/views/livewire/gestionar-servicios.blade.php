@@ -1,5 +1,5 @@
 <div id="servicio_general">
-    <button type="button" id="ventana_servicio" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_crear_actualizar_servicio" wire:click="modal_servicio('Crear')">
+    <button type="button" id="ventana_servicio" class="btn btn-primary col" data-bs-toggle="modal" data-bs-target="#modal_crear_actualizar_servicio" wire:click="modal_servicio('Crear')">
         <i class="fas fa-plus-circle"></i>
     </button>
  <!-- Modal crear periodo-->
