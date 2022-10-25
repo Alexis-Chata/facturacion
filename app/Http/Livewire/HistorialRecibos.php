@@ -219,7 +219,7 @@ class HistorialRecibos extends Component
 
     public function descargar_recibo(Recibo $recibo){
         $r_recibo = new ReciboClass();
-        $r_recibo->descargar_recibo($recibo);
+        return $r_recibo->descargar_recibo($recibo);
     }
 
     public function editarComprobante(Recibo $recibo){
