@@ -124,6 +124,10 @@
     </style>
 </head>
 <body>
-
+    <p>Buen día, adjunto recibo de pago del servicio prestado.</p>
+    Otoniel Calderón <br>
+    Espacio Arquitectura<br>
+    Movil: 47296758<br>
+    <img src="{{public_path('imagenes/logo.jpeg')}}" alt="" width="300px">
 </body>
 </html>
