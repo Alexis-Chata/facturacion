@@ -6,7 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-
+        body{
+            font-family: "gothic";
+        }
         .w-15{
             width: 15%;
         }
