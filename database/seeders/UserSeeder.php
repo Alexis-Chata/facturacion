@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $usuarioadmin->name = 'Administrador';
         $usuarioadmin->paterno = 'Arquitectura';
         $usuarioadmin->materno = 'Espacio';
-        $usuarioadmin->dpi="123456789";
+        $usuarioadmin->dpi="987654321";
         $usuarioadmin->email = 'administrador@arquitectura.com';
         $usuarioadmin->password = bcrypt('Admin#123.@arquitectura.com');
         $usuarioadmin->save();
