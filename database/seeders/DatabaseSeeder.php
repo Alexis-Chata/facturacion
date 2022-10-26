@@ -17,11 +17,12 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call(RoleSeeder::class);
-        $this->call(ServicioSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(TclienteSeeder::class);
-        $this->call(ClienteSeeder::class);
-        $this->call(ReciboSeeder::class);
         $this->call(FormaPagoSeeder::class);
+        //$this->call(ServicioSeeder::class);
+        //$this->call(ClienteSeeder::class);
+        //$this->call(ReciboSeeder::class);
+
     }
 }
