@@ -1,9 +1,9 @@
 <div id="servicio_general">
-    <button type="button" id="ventana_servicio" class="btn btn-primary col" data-bs-toggle="modal" data-bs-target="#modal_crear_actualizar_servicio" wire:click="modal_servicio('Crear')">
+    <button type="button" id="ventana_servicio" class="btn btn-primary col" data-bs-toggle="modal" data-bs-target="#modalactualizar" wire:click="modal_servicio('Crear')">
         <i class="fas fa-plus-circle"></i>
     </button>
  <!-- Modal crear periodo-->
- <div wire:ignore.self class="modal fade" id="modal_crear_actualizar_servicio" tabindex="-2" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <div wire:ignore.self class="modal fade" id="modalactualizar" tabindex="-5" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -15,16 +15,16 @@
                     <div class="col-12">
                         <ul class="nav nav-tabs nav-fill" role="tablist" id="listado-abc">
                             <li class="nav-item">
-                                <a wire:ignore.self class="nav-link active" data-toggle="tab" href="#tasks2" role="tab" aria-controls="tasks2" aria-selected="true" id="1_pestana_s">{{$modal_titulo}} Servicio </a>
+                                <a wire:ignore.self class="nav-link active" data-toggle="tab" href="#tasks2a" role="tab" aria-controls="tasks2a" aria-selected="true" id="1_pestana_s">{{$modal_titulo}} Servicio </a>
                             </li>
                             <li class="nav-item">
-                                <a  wire:ignore.self class="nav-link" data-toggle="tab" href="#files2" role="tab" aria-controls="files2" aria-selected="false" id="1_listado_s">Lista de Servicio</a>
+                                <a  wire:ignore.self class="nav-link" data-toggle="tab" href="#files2a" role="tab" aria-controls="files2a" aria-selected="false" id="1_listado_s">Lista de Servicio</a>
                             </li>
                         </ul>
                     </div>
                     <div class="col-12 mt-3">
                         <div class="tab-content" >
-                            <div wire:ignore.self class="tab-pane fade active show" id="tasks2" role="tabpanel" data-filter-list="card-list-body">
+                            <div wire:ignore.self class="tab-pane fade active show" id="tasks2a" role="tabpanel" data-filter-list="card-list-body">
                                 <div class="row content-list-head">
                                     <div class="col-12 p-4">
                                         <div class="row">
@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div wire:ignore.self class="tab-pane fade" id="files2" role="tabpanel" data-filter-list="dropzone-previews">
+                            <div wire:ignore.self class="tab-pane fade" id="files2a" role="tabpanel" data-filter-list="dropzone-previews">
                                 <div class="content-list">
                                     <div class="row mt-2">
                                         <div class="container mb-4">
