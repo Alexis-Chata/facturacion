@@ -115,7 +115,7 @@
         .family-a{
             font-family: arial;
         }
-        .family-Impact{
+        .family-impact{
             font-family: "impact";
         }
         .fs-28{

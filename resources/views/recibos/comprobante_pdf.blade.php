@@ -6,9 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        body {
-            font-family: {{asset('fuentes/GOTHIC.TTF')}};
-        }
+
         .w-15{
             width: 15%;
         }
@@ -112,14 +110,11 @@
         .border-s-gris {
             border: solid 1px #757171;
         }
-        .family-a{
-            font-family: arial;
-        }
-        .family-Impact{
-            font-family: "impact";
-        }
         .fs-28{
             font-size: 28px;
+        }
+        .fs-23{
+            font-size: 23px;
         }
     </style>
 </head>
@@ -129,14 +124,14 @@
             <tr class="align-top">
                 <th class="w-15"><img src="{{public_path('imagenes/logo.jpeg')}}" alt="" width="100%"></th>
                 <th>
-                    <h1 class="color-naranja family-Impact">ESPACIO ARQUITECTURA</h1>
-                    <h3 class="color-gris family-Impact">José Otoniel Calderón Avila, Nit: 3487448-8</h3>
+                    <h1 class="color-naranja family-impact">ESPACIO ARQUITECTURA</h1>
+                    <h3 class="color-gris family-impact">José Otoniel Calderón Avila, Nit: 3487448-8</h3>
                     <h5 class="color-gris">5a. Avenida y 1a. Calle 5-50, Zona 6, Huehueteanngo</h5>
                     <h5 class="color-gris">Móvil : 4729 6758</h5>
                 </th>
                 <th class="w-15">
                     <div>{!! DNS2D::getBarcodeHTML(asset("storage/".$recibo->path_pdf), 'QRCODE',4.5,4.5) !!} </div>
-                    <div class="text-right color-naranja fw-900 fs-28 ">RECIBO</div>
+                    <div class="text-center color-naranja fw-900 fs-23 ">RECIBO</div>
                 </th>
             </tr>
         </thead>

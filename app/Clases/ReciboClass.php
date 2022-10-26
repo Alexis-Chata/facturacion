@@ -32,6 +32,7 @@ class ReciboClass {
         $formatter = new NumeroALetras();
         $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
+        $consultapdf->setOption(['defaultFont'=>'gothic']);
         $pdfContent = $consultapdf->output();
         $resultado = response()->streamDownload(
             fn () => print($pdfContent),
@@ -44,6 +45,7 @@ class ReciboClass {
         $formatter = new NumeroALetras();
         $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo','total_letra'));
+        $consultapdf->setOption(['defaultFont'=>'gothic']);
         Mail::send('recibos.comprobante_pdf_correo', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo) {
             $email = $recibo->cliente->email;
             $mail->to([$email]);
@@ -57,6 +59,7 @@ class ReciboClass {
         $formatter = new NumeroALetras();
         $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo', 'total_letra'));
+        $consultapdf->setOption(['defaultFont'=>'gothic']);
         if (! File::exists(storage_path('app/public/') . 'recibospdf/'))
         {
             File::makeDirectory(storage_path('app/public/') . 'recibospdf/');
