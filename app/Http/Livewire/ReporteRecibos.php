@@ -34,7 +34,8 @@ class ReporteRecibos extends Component
 
     public function reenviar(Recibo $recibo){
         $r_recibo = new ReciboClass();
-        $r_recibo->reenviar($recibo);
+        $r_recibo->reenviar($recibo,$recibo->cliente->email);
+        $r_recibo->reenviar($recibo,$recibo->cliente->email2);
     }
 
     public function generar_reciboPdf(Recibo $recibo)

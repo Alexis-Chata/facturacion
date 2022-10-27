@@ -61,7 +61,7 @@
                                                     @if ($stcliente == 1)
                                                         <div class="col-12">
                                                             <label for="cliente_paterno" class="fw-bold">Ape Paterno :
-                                                                <span class="text-danger">(*)</span></label>
+                                                            </label>
                                                             <input type="text" id="cliente_paterno"
                                                                 class="form-control" wire:model="cliente.paterno">
                                                             @error('cliente.paterno')
@@ -69,8 +69,7 @@
                                                             @enderror
                                                         </div>
                                                         <div class="col-12">
-                                                            <label for="cliente_materno" class="fw-bold">Ape Materno :
-                                                                <span class="text-danger">(*)</span></label>
+                                                            <label for="cliente_materno" class="fw-bold">Ape Materno :</label>
                                                             <input type="text" id="cliente_materno"
                                                                 class="form-control" wire:model="cliente.materno">
                                                             @error('cliente.materno')
@@ -98,8 +97,16 @@
                                                         @enderror
                                                     </div>
                                                     <div class="col-12">
-                                                        <label for="cliente_direccion" class="fw-bold">Dirección :
-                                                            <span class="text-danger">(*)</span></label>
+                                                        <label for="cliente_email2" class="fw-bold">Email Secundario: <span
+                                                                class="text-danger"></span></label>
+                                                        <input type="text" id="cliente_email2" class="form-control"
+                                                            wire:model="cliente.email2">
+                                                        @error('cliente.email2')
+                                                            <div class="p-1"> {{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label for="cliente_direccion" class="fw-bold">Dirección :</label>
                                                         <input type="text" id="cliente_direccion"
                                                             class="form-control" wire:model="cliente.direccion">
                                                         @error('cliente.direccion')
@@ -107,8 +114,7 @@
                                                         @enderror
                                                     </div>
                                                     <div class="col-12">
-                                                        <label for="cliente_celular" class="fw-bold">Celular : <span
-                                                                class="text-danger">(*)</span></label>
+                                                        <label for="cliente_celular" class="fw-bold">Celular :</label>
                                                         <input type="text" id="cliente_celular"
                                                             class="form-control" wire:model="cliente.celular">
                                                         @error('cliente.celular')

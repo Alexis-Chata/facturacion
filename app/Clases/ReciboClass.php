@@ -41,13 +41,13 @@ class ReciboClass {
         return $resultado;
     }
 
-    public function reenviar(Recibo $recibo){
+    public function reenviar(Recibo $recibo,$semail){
         $formatter = new NumeroALetras();
         $total_letra = $formatter->toMoney($recibo->total, 2, 'QUETZALES', 'CENTAVOS');
         $consultapdf = FacadePdf::loadView('recibos.comprobante_pdf', compact('recibo','total_letra'));
         $consultapdf->setOption(['defaultFont'=>'gothic']);
-        Mail::send('recibos.comprobante_pdf_correo', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo) {
-            $email = $recibo->cliente->email;
+        Mail::send('recibos.comprobante_pdf_correo', compact('recibo','total_letra'), function ($mail) use ($consultapdf, $recibo,$semail) {
+            $email = $semail;
             $mail->to([$email]);
             $mail->subject("Espacio Arquitectura");
             $mail->attachData($consultapdf->output(), 'recibo.pdf');

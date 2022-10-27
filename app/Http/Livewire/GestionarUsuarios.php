@@ -19,20 +19,22 @@ class GestionarUsuarios extends Component
     protected $rules = [
         'stcliente' => 'required',
         'cliente.name' => 'required|string',
-        'cliente.paterno' => 'required|string',
-        'cliente.materno' => 'required|string',
-        'cliente.identificacion' => 'required|string',
+        'cliente.paterno' => '',
+        'cliente.materno' => '',
+        'cliente.identificacion' => 'required|string|unique:clientes,identificacion',
         'cliente.email' => 'required|email',
-        'cliente.direccion' => 'required|string',
-        'cliente.celular' => 'required',
+        'cliente.direccion' => '',
+        'cliente.celular' => '',
+        'cliente.email2' => '',
     ];
     protected $rules2 = [
         'stcliente' => 'required',
         'cliente.name' => 'required|string',
-        'cliente.identificacion' => 'required|string',
+        'cliente.identificacion' => 'required|string|unique:clientes,identificacion',
         'cliente.email' => 'required|email',
-        'cliente.direccion' => 'required|string',
-        'cliente.celular' => 'required',
+        'cliente.direccion' => '',
+        'cliente.celular' => '',
+        'cliente.email2' => '',
     ];
 
     protected $validationAttributes = [
@@ -42,6 +44,7 @@ class GestionarUsuarios extends Component
         'cliente.matenro' => 'Apellido Materno',
         'cliente.identificacion' => 'Identificación',
         'cliente.email' => 'Email',
+        'cliente.email2' => 'Email Secundario',
         'cliente.direccion' => 'Dirección',
         'cliente.celular' => 'Celular',
     ];
@@ -91,7 +94,7 @@ class GestionarUsuarios extends Component
             }
         }
         else {
-
+            $this->validate(['cliente.identificacion'=>'required|unique:clientes,identificacion,' . $this->cliente->id,]);
         }
         $this->cliente->tcliente_id = $this->stcliente;
         $this->cliente->save();

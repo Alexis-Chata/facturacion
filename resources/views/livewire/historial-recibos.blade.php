@@ -168,7 +168,7 @@
                             <td scope="row" class="text-center">{{ $recibo->termino }}</td>
                             <td scope="row" class="text-center">Q.{{ $recibo->total }}</td>
                             <td scope="row" class="text-center"><button
-                                    class="btn btn-primary">{{ $recibo->detalles->count() }}</button></td>
+                                    class="btn btn-primary" onclick="openModelPDF('{{asset('storage/'.$recibo->path_pdf)}}')">{{ $recibo->detalles->count() }}</button></td>
                             <td scope="row" class="text-center">cancelado</td>
                             <td scope="row" class="text-center">
                                 <button class="btn btn-danger" wire:loading.attr="disabled" wire:target="reenviar"
@@ -186,6 +186,31 @@
             </table>
         </div>
     </div>
+    <div wire:ignore.self class="modal fade" id="modal_detalle_recibo" tabindex="-2" aria-labelledby="detallerecibo" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="detallerecibo">Descripción del Recibo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <iframe id="iframePDF" frameborder="0" scrolling="no" width="100%" height="500px"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <script>
+        function openModelPDF(url)
+        {
+            $('#modal_detalle_recibo').modal('show');
+            $('#iframePDF').attr('src',url);
+        }
+    </script>
     <script>
         window.onload = function() {
             $(document).ready(function() {
