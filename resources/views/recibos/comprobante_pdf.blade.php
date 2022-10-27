@@ -128,7 +128,7 @@
                 <th>
                     <h1 class="color-naranja family-impact">ESPACIO ARQUITECTURA</h1>
                     <h3 class="color-gris family-impact">José Otoniel Calderón Avila, Nit: 3487448-8</h3>
-                    <h5 class="color-gris">5a. Avenida y 1a. Calle 5-50, Zona 6, Huehueteanngo</h5>
+                    <h5 class="color-gris">5a. Avenida y 1a. Calle 5-50, Zona 6, Huehuetenango</h5>
                     <h5 class="color-gris">Móvil : 4729 6758</h5>
                 </th>
                 <th class="w-15">
@@ -167,7 +167,7 @@
             <tr>
                 <td class="p-2 fw-300">{{Str::limit($recibo->cliente->direccion,45)}}</td>
                 <td class="w-10 p-2"></td>
-                <td class="p-2 fw-900 text-center">{{$recibo->cliente->id}}</td>
+                <td class="p-2 fw-900 text-center">{{$recibo->cliente->identificacion}}</td>
                 <td class="p-2 fw-900 text-center">{{$recibo->termino}}</td>
             </tr>
         </tbody>
@@ -198,11 +198,13 @@
             </tr>
             @endforeach
             @php
-                if($recibo->detalles->count() < 13){
-                    $nfilas = 13-$recibo->detalles->count();
+                if($recibo->detalles->count() < 10)
+                {
+                    $nfilas = 10-$recibo->detalles->count();
                 }
-                else {
-                    $nfilas =$recibo->detalles->count();
+                elseif($recibo->detalles->count() >= 10)
+                {
+                    $nfilas = 0;
                 }
             @endphp
             @for ($i = 0; $i < $nfilas; $i++)
