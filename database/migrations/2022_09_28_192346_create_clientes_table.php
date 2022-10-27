@@ -19,10 +19,11 @@ class CreateClientesTable extends Migration
             $table->string('paterno')->nullable();
             $table->string('materno')->nullable();
             $table->unsignedBigInteger('tcliente_id')->nullable();
-            $table->string('identificacion');
+            $table->string('identificacion')->unique();
             $table->string('email');
-            $table->string('direccion');
-            $table->string('celular');
+            $table->string('email2')->nullable();
+            $table->string('direccion')->nullable();
+            $table->string('celular')->nullable();
             $table->foreign('tcliente_id')->references('id')->on('tclientes')->onDelete('set null');
             $table->timestamps();
         });
