@@ -26,14 +26,14 @@
                 <td>{{ date('d-m-Y', strtotime($recibo->femision)) }}
                 </td>
                 <td>{{ $recibo->termino }}</td>
-                <td>Q.{{ $recibo->total }}</td>
+                <td>S/.{{ $recibo->total }}</td>
                 <td><button>{{ $recibo->detalles->count()}}</button></td>
                 <td>cancelado</td>
             </tr>
         @endforeach
             <tr>
                 <td>Total</td>
-                <td>Q.{{$total}}</td>
+                <td>S/.{{$total}}</td>
             </tr>
     </tbody>
 </table>

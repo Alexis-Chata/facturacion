@@ -19,7 +19,7 @@
                 <td>REC - {{ $recibo->correlativo }}</td>
                 <td>{{ date('d-m-Y',strtotime($recibo->femision)) }}</td>
                 <td>{{ $recibo->termino}}</td>
-                <td>Q.{{ $recibo->total}}</td>
+                <td>S/.{{ $recibo->total}}</td>
                 <td>{{ $recibo->detalles->count()}}</td>
                 <td>Cancelado</td>
             </tr>

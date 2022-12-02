@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Tcliente extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
 }

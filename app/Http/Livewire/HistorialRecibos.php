@@ -3,23 +3,21 @@
 namespace App\Http\Livewire;
 
 use App\Clases\ReciboClass;
-use App\Exports\CrecibosExport;
-use App\Mail\TestMail;
 use App\Models\Cliente;
+use App\Models\CorrelativoBoletaB001;
+use App\Models\CorrelativoFacturaF001;
+use App\Models\CorrelativoNotaCreditoBC01;
+use App\Models\CorrelativoNotaCreditoFC01;
+use App\Models\CorrelativoReciboRE01;
+use App\Models\CorrelativoReciboRE02;
 use App\Models\Detalle;
 use App\Models\FormaPago;
 use App\Models\Recibo;
+use App\Models\Serie;
 use App\Models\Servicio;
-use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use Facade\FlareClient\Http\Client;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
-use Luecano\NumeroALetras\NumeroALetras;
-use Maatwebsite\Excel\Facades\Excel;
 
 class HistorialRecibos extends Component
 {
@@ -27,12 +25,12 @@ class HistorialRecibos extends Component
     public $ffinal;
     public $hcliente;
     public $listaServicios, $servicioSeleccionado;
-    public $cantidad, $costo, $importe, $detallePedido, $total;
+    public $cantidad, $precio_unitario, $importe_total, $detallePedido, $total;
     public $forma_pago, $f_emision, $card_body_btn_generar_comprobante, $editar_comprobante_id, $editar_detalle_id;
     public $editandoItem, $card_header_servicio, $card_body_btn_servicio, $card_header_recibo;
 
     public function actualizar_servicios(){
-      $this->listaServicios = Servicio::all();
+        $this->listaServicios = Servicio::all();
     }
 
     public function descargar_historial(){
@@ -44,7 +42,9 @@ class HistorialRecibos extends Component
     public function  mount($cliente_id=null){
         $this->resetRecibo();
         $this->resetErrorBag();
+        $this->inputDoc = isset($this->inputDoc) ? $this->inputDoc : 'B001';
         $this->listaServicios = Servicio::all();
+        $this->servicioSeleccionado = "";
         $this->forma_pago = 'Efectivo';
         $this->card_header_recibo = 'RECIBO';
         $this->card_body_btn_generar_comprobante = 'Generar Comprobante';
@@ -67,7 +67,8 @@ class HistorialRecibos extends Component
         $this->card_body_btn_servicio = 'Agregar';
         $this->editar_detalle_id = null;
         $this->cantidad = 1;
-        $this->costo = 0;
+        $this->precio_unitario = 0;
+        $this->servicioSeleccionado = "";
         $this->updatedCantidad();
     }
 
@@ -81,12 +82,19 @@ class HistorialRecibos extends Component
 
     public function updatedCantidad(){
         $this->cantidad = $this->cantidad ? $this->cantidad : 1;
-        $this->costo = $this->costo ? $this->costo : number_format(0, 2);
-        $this->importe = number_format($this->cantidad * $this->costo, 2, '.', '');
+        $this->precio_unitario = $this->precio_unitario ? number_format($this->precio_unitario, 2, '.', '') : number_format(0, 2);
+        $this->importe_total = number_format($this->cantidad * $this->precio_unitario, 2, '.', '');
     }
 
-    public function updatedcosto(){
+    public function updatedPrecioUnitario(){
 
+        $this->updatedCantidad();
+    }
+
+    public function updatedservicioSeleccionado(){
+
+        $precio_unitarioSeleccionado = Servicio::find($this->servicioSeleccionado) ? Servicio::find($this->servicioSeleccionado)->precio_unitario : 0;
+        $this->precio_unitario = number_format($precio_unitarioSeleccionado, 2, '.', '') ;
         $this->updatedCantidad();
     }
 
@@ -111,12 +119,13 @@ class HistorialRecibos extends Component
             $this->hcliente->direccion = ' ----- Seleccionar Cliente ----- ';
         }
         $formaPago = FormaPago::all();
-        return view('livewire.historial-recibos', compact('formaPago'));
+        $series = Serie::all();
+        return view('livewire.historial-recibos', compact('formaPago', 'series'));
     }
 
     public function eliminarItem($indice){
 
-        $this->total = $this->total-$this->detallePedido[$indice]['importe'];
+        $this->total = $this->total-$this->detallePedido[$indice]['importe_total'];
         unset($this->detallePedido[$indice]);
     }
     public function editarItem($indice){
@@ -127,8 +136,8 @@ class HistorialRecibos extends Component
         $this->emit('updateDescripcionServicio', $this->detallePedido[$indice]['descripcion']);
         $this->servicioSeleccionado = $this->detallePedido[$indice]['descripcion'];
         $this->cantidad = $this->detallePedido[$indice]['cantidad'];
-        $this->costo = $this->detallePedido[$indice]['precio'];
-        $this->importe = $this->detallePedido[$indice]['importe'];
+        $this->precio_unitario = $this->detallePedido[$indice]['precio_unitario'];
+        $this->importe_total = $this->detallePedido[$indice]['importe_total'];
     }
 
     public function agregar_item(Detalle $newItem){
@@ -138,20 +147,39 @@ class HistorialRecibos extends Component
         $this->validateCliente();
 
         Validator::make(
-            ['servicio' => $this->servicioSeleccionado ? $this->servicioSeleccionado: null, 'cantidad' => $this->cantidad, 'costo' => $this->costo],
-            ['servicio' => 'required', 'cantidad' => 'required|numeric|min:1', 'costo' => 'required|numeric|min:1'],
+            ['servicio' => $this->servicioSeleccionado ? $this->servicioSeleccionado: null, 'cantidad' => $this->cantidad, 'precio_unitario' => $this->precio_unitario],
+            ['servicio' => 'required', 'cantidad' => 'required|numeric|min:1', 'precio_unitario' => 'required|numeric|min:1'],
             ['required' => 'requerido', 'min' => 'minimo 1'],
         )->validate();
-        $newItem->descripcion = $this->servicioSeleccionado;
+
+        $productoServicio = Servicio::find($this->servicioSeleccionado);
+        $porcentaje_igv = 18;
+        $valor_unitario = number_format($this->precio_unitario/1.18, 2, '.', '');
+        switch ($productoServicio->tipo_afectacion_id) {
+            case '20':
+            case '30':
+                $valor_unitario = $this->precio_unitario;
+                $porcentaje_igv = 0;
+                break;
+        }
+
+        $newItem->producto_id = $this->servicioSeleccionado;
+        $newItem->descripcion = $productoServicio->name;
         $newItem->cantidad = $this->cantidad;
-        $newItem->precio = $this->costo;
-        $newItem->importe = $this->importe;
+        $newItem->valor_unitario = $valor_unitario;
+        $newItem->precio_unitario = $this->precio_unitario;
+        $newItem->igv = number_format(($this->precio_unitario-$valor_unitario) * $this->cantidad, 2, '.', '');
+        $newItem->porcentaje_igv = $porcentaje_igv;
+        $newItem->valor_total = number_format($valor_unitario * $this->cantidad, 2, '.', '');
+        $newItem->importe_total = number_format($this->precio_unitario * $this->cantidad, 2, '.', '');
+        $newItem->tipo_afectacion_id = $productoServicio->tipo_afectacion_id;
+        $newItem->tipo_conceptos_cobro_id = $productoServicio->tipo_conceptos_cobro_id;
         $this->detallePedido->push($newItem->toArray());
         if(isset($this->editandoItem)){
             $this->eliminarItem($this->editandoItem);
             $this->editandoItem = null;
         }
-        $this->total = $this->total+$this->importe;
+        $this->total = $this->total+$this->importe_total;
         $this->resetNewItem();
     }
 
@@ -173,14 +201,69 @@ class HistorialRecibos extends Component
             ['detalle' => 'required'],
             ['required' => 'Agregar Servicios'],
         )->validate();
+
+        $serie = Serie::firstwhere('serie', $this->inputDoc);
+        $tipo_comprobante = $serie->tipo_comprobante_id;
+        switch ($tipo_comprobante) {
+            case '00':
+                $modelCorrelativo = "App\Models\CorrelativoRecibo".$serie->serie;
+                $correlativo = new $modelCorrelativo();
+                $correlativo->save();
+                $tipo = "RECIBO DE PAGO";
+                break;
+
+            case '01':
+                $modelCorrelativo = "App\Models\CorrelativoFactura".$serie->serie;
+                $correlativo = new $modelCorrelativo();
+                $correlativo->save();
+                $tipo = "FACTURA ELECTRONICA";
+                break;
+
+            case '03':
+                $modelCorrelativo = "App\Models\CorrelativoBoleta".$serie->serie;
+                $correlativo = new $modelCorrelativo();
+                $correlativo->save();
+                $tipo = "BOLETA DE VENTA ELECTRONICA";
+                break;
+
+            case '07':
+                $modelCorrelativo = "App\Models\CorrelativoNotaCredito".$serie->serie;
+                $correlativo = new $modelCorrelativo();
+                $correlativo->save();
+                $tipo = "NOTA DE CREDITO ELECTRONICA";
+                break;
+
+        }
+
+        $recibo->emisor_id = 1;
         $recibo->femision = $this->f_emision;
-        $recibo->cliente_id = $this->hcliente->id;
-        $recibo->termino = $this->forma_pago;
+        $recibo->tipo_comprobante_id = $tipo_comprobante;
+        $recibo->tipo = $tipo;
+        $recibo->serie_id = $serie->id;
+        $recibo->serie = $serie->serie;
+        $recibo->forma_pago = 'Contado';
+        $recibo->correlativo = $correlativo->id;
+        $recibo->f_vencimiento = now();
+        $recibo->f_emision = now();
+        $recibo->moneda_id = "PEN";
+        $recibo->op_gravadas = $this->detallePedido->where('tipo_afectacion_id', 10)->sum('valor_total');
+        $recibo->op_exoneradas = $this->detallePedido->where('tipo_afectacion_id', 20)->sum('valor_total');
+        $recibo->op_inafectas = $this->detallePedido->where('tipo_afectacion_id', 30)->sum('valor_total');
+        $recibo->igv = $this->detallePedido->where('tipo_afectacion_id', 10)->sum('igv');
         $recibo->total = $this->total;
-        $recibo->cajero_id = 1;
+        $recibo->obs_ref = "-";
+        $recibo->cliente_id = $this->hcliente->id;
+        $recibo->cestado = 1;
+        $recibo->cajero_id = Auth::user()->id;
+        $recibo->tipo_comprobante_ref_id = null;
+        $recibo->comprobante_ref_id = null;
+        $recibo->serie_ref = null;
+        $recibo->correlativo_ref = null;
+
+        $recibo->termino = $this->forma_pago;
         $recibo->save();
-        $recibo->correlativo = $recibo->correlativo ? $recibo->correlativo : $recibo->id;
-        $recibo->save();
+        $serie->correlativo = $correlativo->id;
+        $serie->save();
 
         foreach($this->detallePedido as $item) {
             $item['id'] = isset($item['id']) ? $item['id'] : null;

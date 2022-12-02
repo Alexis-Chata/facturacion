@@ -25,7 +25,7 @@ class ReciboSeeder extends Seeder
             ]);
             $total = 0;
             foreach ($detalles as $key => $detalle) {
-                $total = $total + $detalle->importe;
+                $total = $total + $detalle->importe_total;
             }
             $recibo->correlativo = $keya+1;
             $recibo->total = $total;

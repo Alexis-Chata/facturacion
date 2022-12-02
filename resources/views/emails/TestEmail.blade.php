@@ -191,13 +191,13 @@
             @endphp
             @foreach ($recibo->detalles as $detalle)
             @php
-                $subtotal = $subtotal +$detalle->precio*$detalle->cantidad;
+                $subtotal = $subtotal +$detalle->precio_unitario*$detalle->cantidad;
             @endphp
             <tr>
                 <td class="border-1">{{$detalle->descripcion}}</td>
                 <td class="border-1 text-center">{{$detalle->cantidad}}</td>
-                <td class="border-1 text-center">Q {{$detalle->precio}}</td>
-                <td class="border-1 text-center">Q {{$detalle->precio*$detalle->cantidad}}</td>
+                <td class="border-1 text-center">S/. {{$detalle->precio_unitario}}</td>
+                <td class="border-1 text-center">S/. {{$detalle->precio_unitario*$detalle->cantidad}}</td>
             </tr>
             @endforeach
             @php
@@ -219,7 +219,7 @@
             <tr>
                 <td class="p-2 bg-gris-a color-rojo text-center">Estatus : Cancelado</td>
                 <td class="p-2 bg-gris-b" colspan="2">SUBTOTAL</td>
-                <td class="p-2 bg-gris-a text-center">Q {{$subtotal}}</td>
+                <td class="p-2 bg-gris-a text-center">S/. {{$subtotal}}</td>
             </tr>
             <tr>
                 <td class="p-2">Nota: Este no es un documento contable.</td>
@@ -234,7 +234,7 @@
             <tr>
                 <td class="p-2"></td>
                 <td class="p-2 bg-gris-b     color-gris" colspan="2">TOTAL</td>
-                <td class="p-2 bg-gris-a text-center">Q {{$subtotal}}</td>
+                <td class="p-2 bg-gris-a text-center">S/. {{$subtotal}}</td>
             </tr>
             <tr>
                 <td colspan="4" class="">Total en Letras :</td>

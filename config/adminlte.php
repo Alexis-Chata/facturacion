@@ -309,6 +309,12 @@ return [
             'icon' => 'fas fa-fw fa-lock',
             'can' => 'admin.recibos',
         ],
+        [
+            'text' => 'CPE',
+            'route'  => 'admin.pagos.comprobantes',
+            'icon' => 'fas fa-file-alt',
+            'can' => 'admin.recibos',
+        ],
     ],
 
     /*
@@ -463,5 +469,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];

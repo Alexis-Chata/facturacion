@@ -50,7 +50,7 @@
                             <td scope="row" class="text-center">{{ date('d-m-Y', strtotime($recibo->femision)) }}
                             </td>
                             <td scope="row" class="text-center">{{ $recibo->termino }}</td>
-                            <td scope="row" class="text-center">Q.{{ $recibo->total }}</td>
+                            <td scope="row" class="text-center">S/.{{ $recibo->total }}</td>
                             <td scope="row" class="text-center"><button
                                     class="btn btn-primary" onclick="openModelPDF('{{asset('storage/'.$recibo->path_pdf)}}')">{{ $recibo->detalles->count() }}</button></td>
                             <td scope="row" class="text-center">cancelado</td>
@@ -68,7 +68,7 @@
                 </tbody>
             </table>
             <div class="row">
-                <div class="my-4 col-6"> <strong>Total : Q. {{$total}}</strong></div>
+                <div class="my-4 col-6"> <strong>Total : S/. {{$total}}</strong></div>
                 <div class="text-right my-4 col-6"><button class="btn btn-success"  wire:click="descargar_recibos()"><i class="fas fa-download"></i> Descargar Reporte</button></div>
             </div>
         </div>

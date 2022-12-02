@@ -19,7 +19,7 @@ class DetalleFactory extends Factory
             'descripcion' => $this->faker->sentence(),
             'cantidad' => $cantidad,
             'precio' => $precio,
-            'importe' => $cantidad*$precio,
+            'importe_total' => $cantidad*$precio,
         ];
     }
 }

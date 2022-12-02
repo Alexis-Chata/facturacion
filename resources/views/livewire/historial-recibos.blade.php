@@ -20,6 +20,19 @@
                 <div class="col-sm">
                     <p><strong>Cliente : </strong>{{ $hcliente->name . ' ' . $hcliente->paterno . ' ' . $hcliente->materno }}</p>
                     <p><strong>Direccion del cliente : </strong>{{ ' ' . $hcliente->direccion }}</p>
+                    <div class="col">
+                        <div class="form-group row">
+                            <label for="inputDoc" class="col-3 col-form-label"><strong>Doc:</strong></label>
+                            <div class="col-8">
+                                <select wire:model="inputDoc" name="inputDoc" class="form-control" id="inputDoc">
+                                    @foreach ($series as $serie)
+                                    <option value="{{$serie->serie}}" selected>{{$serie->serie}}</option>
+                                    @endforeach
+                                </select>
+                                <x-jet-input-error for="inputDoc"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col">
                     <p><strong>Fecha :</strong> <input type="date" class="form form-control" wire:model="f_emision"></p>
@@ -53,7 +66,7 @@
                                         wire:model='servicioSeleccionado' required>
                                         <option value=""> Seleccione un servicio</option>
                                         @foreach ($listaServicios as $listaServicio)
-                                            <option value="{{ $listaServicio->name }}">{{ $listaServicio->name }}</option>
+                                            <option value="{{ $listaServicio->id }}">{{ $listaServicio->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -69,15 +82,15 @@
                                 <x-jet-input-error for="cantidad" />
                             </div>
                             <div class="col-sm-3 col-md form-label-group form-floating">
-                                <input type="number" class="form-control" name="costo" id="costo"
-                                    placeholder="Costo" wire:model.lazy='costo' required min=0>
-                                <label for="costo" style="padding: 1rem 1.5rem;"> Costo: </label>
-                                <x-jet-input-error for="costo" />
+                                <input type="number" class="form-control" name="precio_unitario" id="precio_unitario"
+                                    placeholder="precio_unitario" wire:model.lazy='precio_unitario' required min=0>
+                                <label for="precio_unitario" style="padding: 1rem 1.5rem;"> Precio: </label>
+                                <x-jet-input-error for="precio_unitario" />
                             </div>
                             <div class="col-sm-3 col-md form-label-group form-floating">
-                                <input type="number" class="form-control" name="importe" id="importe"
-                                    placeholder="Importe" disabled wire:model='importe'>
-                                <label for="importe" style="padding: 1rem 1.5rem;"> Importe: </label>
+                                <input type="number" class="form-control" name="importe_total" id="importe_total"
+                                    placeholder="Importe_total" disabled wire:model='importe_total'>
+                                <label for="importe_total" style="padding: 1rem 1.5rem;"> Importe: </label>
                             </div>
                             <div class="col-sm">
                                 <button class="btn btn-success" wire:click.prevent="agregar_item({{ $editar_detalle_id }})" wire:loading.attr="disabled" id="card-body-btn-servicio">{{ $card_body_btn_servicio }}</button>
@@ -94,7 +107,7 @@
                         <th scope="col" class="text-center">Descripcion</th>
                         <th scope="col" class="text-center">Cantidad</th>
                         <th scope="col" class="text-center">Precio</th>
-                        <th scope="col" class="text-center">Importe</th>
+                        <th scope="col" class="text-center">Importe_total</th>
                         <th scope="col" class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -104,8 +117,8 @@
                             <tr>
                                 <td scope="row" class="align-middle text-center">{{ $item['descripcion'] }}</td>
                                 <td scope="row" class="align-middle text-center">{{ $item['cantidad'] }}</td>
-                                <td scope="row" class="align-middle text-center">{{ 'Q. '.number_format($item['precio'], 2) }}</td>
-                                <td scope="row" class="align-middle text-center">{{ 'Q. '.number_format($item['importe'], 2) }}</td>
+                                <td scope="row" class="align-middle text-center">{{ 'S/. '.number_format($item['precio_unitario'], 2) }}</td>
+                                <td scope="row" class="align-middle text-center">{{ 'S/. '.number_format($item['importe_total'], 2) }}</td>
                                 <td scope="row" class="align-middle text-center">
                                     <button class="align-middle btn btn-danger" wire:click="eliminarItem({{ $indice }})" wire:loading.attr="disabled"><i class="far fa-trash-alt"
                                             aria-hidden="true"></i></button>
@@ -123,7 +136,7 @@
             </table>
             <div class="row justify-content-end mt-3">
                 <div class="col-auto">
-                    <span><strong>Total: </strong> Q. {{ number_format($total, 2) }}</span>
+                    <span><strong>Total: </strong> S/. {{ number_format($total, 2) }}</span>
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-primary" wire:click="generar_comprobante({{ $editar_comprobante_id }})" wire:loading.attr="disabled">{{ $card_body_btn_generar_comprobante }}</button>
@@ -162,11 +175,11 @@
                 <tbody>
                     @foreach ($hcliente->recibos->where('femision','>=',$finicio)->where('femision','<=',$ffinal)->sortByDesc('correlativo')->sortByDesc('femision') as $recibo)
                         <tr>
-                            <td scope="row" class="text-center">REC - {{ $recibo->correlativo }}</td>
+                            <td scope="row" class="text-center">{{ $recibo->serie }} - {{ $recibo->correlativo }}</td>
                             <td scope="row" class="text-center">{{ date('d-m-Y', strtotime($recibo->femision)) }}
                             </td>
                             <td scope="row" class="text-center">{{ $recibo->termino }}</td>
-                            <td scope="row" class="text-center">Q.{{ $recibo->total }}</td>
+                            <td scope="row" class="text-center">S/.{{ $recibo->total }}</td>
                             <td scope="row" class="text-center"><button
                                     class="btn btn-primary" onclick="openModelPDF('{{asset('storage/'.$recibo->path_pdf)}}')">{{ $recibo->detalles->count() }}</button></td>
                             <td scope="row" class="text-center">cancelado</td>
@@ -218,7 +231,7 @@
                 $('#listaServicios').on('change', function() {
                     let valor = $('#listaServicios').select2('val');
                     let texto = $('#listaServicios option:selected').text();
-                    @this.set('servicioSeleccionado', texto);
+                    @this.set('servicioSeleccionado', valor);
                 });
             })
         }
@@ -267,7 +280,7 @@
                     $('#listaServicios').on('change', function() {
                         let valor = $('#listaServicios').select2('val');
                         let texto = $('#listaServicios option:selected').text();
-                        @this.set('servicioSeleccionado', texto);
+                        @this.set('servicioSeleccionado', valor);
                     });
         });
 </script>
